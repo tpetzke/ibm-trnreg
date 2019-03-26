@@ -4,7 +4,6 @@ var cfenv = require("cfenv");
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const got = require('got');
 
 // load local VCAP configuration  and service credentials
 var vcapLocal;
@@ -57,15 +56,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function (req, res, next) {
     req.db = mydb;
     next();
-});
-
-// TEST
-
-got('https://ergebnisse.svw.info//tools/dwz.php?aktion=person&name=Petzke,%20Jonas', { json: true }).then(response => {
-  console.log(response.body.url);
-  console.log(response.body.explanation);
-}).catch(error => {
-  console.log(error.response.body);
 });
 
 app.use('/', indexRouter);
