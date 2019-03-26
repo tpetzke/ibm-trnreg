@@ -25,16 +25,27 @@ if (appEnv.services['cloudantNoSQLDB']) {
 
 if (cloudant) {
     //database name
-    var dbName = 'players';
+    var dbPlayersName = 'players';
 
     // Create a new "players" database.
-    cloudant.db.create(dbName, function (err, data) {
+    cloudant.db.create(dbPlayersName, function (err, data) {
         if (!err) //err if database doesn't already exists
-            console.log("Created database: " + dbName);
+            console.log("Created database: " + dbPlayersName);
     });
 
-    // Specify the database we are going to use (mydb)...
-    mydb = cloudant.db.use(dbName);
+    // Specify the database we are going to use (playerdb)...
+    playerdb = cloudant.db.use(dbPlayersName);
+
+    var dbDewisName = 'dewis';
+
+    // Create a new "dewis" database.
+    cloudant.db.create(dbDewisName, function (err, data) {
+        if (!err) //err if database doesn't already exists
+            console.log("Created database: " + dbDewisName);
+    });
+
+    // Specify the database we are going to use (playerdb)...
+    dewisdb = cloudant.db.use(dbDewisName);
 }
 
 var indexRouter = require('./routes/index');
@@ -54,7 +65,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Make our db accessible to our router
 app.use(function (req, res, next) {
-    req.db = mydb;
+    req.db = playerdb;
+    req.dewisdb = dewisdb;
     next();
 });
 
