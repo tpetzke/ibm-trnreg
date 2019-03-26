@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Meldeliste <%= ClubName %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <div id="container">
+        <div id="main_mnu_bar">
+            <ul>
+               <li id="announcement"><a href="<%= tournament.url %>">Ausschreibung</a></li>
+               <% for(i = 0; i < tournament.groups.length; i++) { %> 
+                <li id="<%= tournament.groups[i] %>"><a href="/group?idx=<%=i%>"><%= tournament.groups[i] %></a></li>
+               <% } %> 
+               <li id="clublist"><a href="/clublist">Vereine</a></li>
+            </ul>
+        </div>
+        <img src="images/chess-banner.jpg" alt="" width="1280" height="331">
+        <h3>Meldeliste <%= ClubName %></h3>
+        <table id="players">
+            <tr>
+              <th style="text-align:center">SNr</th>
+              <th>Spieler</th>
+              <th style="text-align:center">A</th>
+              <th>Verein</th>
+              <th style="text-align:center">ELO</th>
+              <th style="text-align:center">DWZ</th>
+            </tr>
+            <% for (i=0; i < data.docs.length; i++) { 
+              var a = "";
+              if (data.docs[i].Sex == "female") a = "w";
+              %>
+            <tr>
+              <td style="text-align:center"><%= i+1 %></td>
+              <td><%= data.docs[i].Firstname + " " + data.docs[i].Lastname %></td>
+              <td style="text-align:center"><%= a %></td>
+              <td><%= data.docs[i].Club %></td>
+              <td style="text-align:center"><%= data.docs[i].ELO %></td>
+              <td style="text-align:center"><%= data.docs[i].DWZ %></td>
+            </tr>
+            <% } %>  
+          </table>
+        <div id="index_button_container">
+        <form action="/">
+          <input type="submit" class="blue-button" value="Zurück zur Homepage" />
+        </form>
+        </div>
+        <!-- The footer -->
+        <div id="footer_bar">
+        <h3>Copyright (c) 2019, <a href="http://www.fam-petzke.de">Thomas Petzke</a></h3>
+        </div>
+    </div>
+  </body>
+</html>

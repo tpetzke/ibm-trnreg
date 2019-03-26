@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Anmeldung</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+      <div  id="container">
+          <div id="main_mnu_bar">
+              <ul>
+                 <li id="announcement"><a href="<%= tournament.url %>">Ausschreibung</a></li>
+                 <% for(i = 0; i < tournament.groups.length; i++) { %> 
+                  <li id="<%= tournament.groups[i] %>"><a href="/group?idx=<%=i%>"><%= tournament.groups[i] %></a></li>
+                 <% } %> 
+                 <li id="clublist"><a href="/clublist">Vereine</a></li>
+              </ul>
+          </div>
+        <img src="images/chess-banner.jpg" alt="" width="1280" height="331">
+        <h1><%= tournament.name %></h1>
+        <h3><%= tournament.date %> in <%= tournament.location %></h3>
+        <p><%= tournament.description %></p>
+        <div id="index_button_container">
+        <form action="/addplayer">
+          <input type="submit" class="orange-button" value="Zur Turnieranmeldung" />
+        </form>
+        </div>
+        <!-- The footer -->
+        <div id="footer_bar">
+        <h3>Copyright (c) 2019, <a href="http://www.fam-petzke.de">Thomas Petzke</a></h3>
+        </div>
+    </div>
+  </body>
+</html>

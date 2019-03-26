@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Turnier Setup</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+      <div  id="container">
+        <img src="images/chess-banner.jpg" alt="" border="0" width="1280" height="331">
+        <h1>Turnier Setup</h1>
+        <form class="setupform" id="formTournamentSetup" name="setup" method="post" action="/setup">
+            <input id="name" class="input" type="text" placeholder="Turniername" name="name" value="<%= data.docs[0].tournament.name %>"/>
+            <input id="date" class="input" type="text" placeholder="Datum" name="date" value="<%= data.docs[0].tournament.date %>"/>
+            <input id="location" class="input" type="text" placeholder="Ort" name="location" value="<%= data.docs[0].tournament.location %>"/>
+            <input id="description" class="input-long" type="text" placeholder="Beschreibung" name="description" value="<%= data.docs[0].tournament.description %>"/>
+            <input id="announcement" class="input-long" type="text" placeholder="Ausschreibung" name="announcement" value="<%= data.docs[0].tournament.url %>"/>
+            <%
+            var groups = "";
+            for (i=0; i< data.docs[0].tournament.groups.length-1; i++) { 
+                groups += data.docs[0].tournament.groups[i] + ", ";
+            }
+            if (i < data.docs[0].tournament.groups.length) groups += data.docs[0].tournament.groups[i];
+            %>
+            <input id="groups" class="input-long" type="text" placeholder="Turniergruppen (mit , getrennt)" name="groups" value="<%= groups %>"/>
+            <input type="hidden" id="_id" name="_id" value="<%= data.docs[0]._id %>">
+            <input type="hidden" id="_rev" name="_rev" value="<%= data.docs[0]._rev %>"> 
+            <button id="btnSubmit" name="submit" class="blue-button" value="update">Turnier Setup aktualisieren</button>
+            <button id="btnSubmit" name="submit" class="red-button" value="init">Neues Turnier anlegen</button>
+        </form>   
+        <!-- The footer -->
+        <div id="footer_bar">
+        <h3>Copyright (c) 2019, <a href="http://www.fam-petzke.de">Thomas Petzke</a></h3>
+        </div>
+    </div>
+  </body>
+</html>
