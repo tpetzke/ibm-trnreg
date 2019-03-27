@@ -6,10 +6,10 @@
   </head>
   <body>
     <div  id="container">
-        <img src="images/chess-banner-thin.jpg" alt="" width="1280" height="191">
+        <img src="/images/chess-banner-thin.jpg" alt="" width="1280" height="191">
         <h1>Turnieranmeldung für Spieler</h1>
         <h2>Schritt 2 von 3</h2>
-        <form id="formAddUser" name="adduser" method="post" action="/verifyplayer">
+        <form id="formAddUser" name="adduser" method="post" action="/player/verifyplayer">
             <% var id=""; if (dewis.docs.length) id = dewis.docs[0]._id; %>
             <input id="dewisid" name="dewisid" type="hidden" value="<%=id%>">
             <div style="float:left;margin-right:20px;">

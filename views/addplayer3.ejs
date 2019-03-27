@@ -5,7 +5,7 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-     <form id="formVerify" name="verifyuser" method="post" action="/addplayer">
+     <form id="formVerify" name="verifyuser" method="post" action="/player/addplayer">
         <input type="hidden" id="firstname" name="firstname" value="<%=Firstname%>">
         <input type="hidden" id="lastname" name="lastname" value="<%=Lastname%>">
         <input type="hidden" id="dwz" name="dwz" value="<%=DWZ%>">
@@ -19,7 +19,7 @@
         <% var geschlecht = "Männlich"; if (Sex=="female") geschlecht="Weiblich"; %>
         
         <div  id="container">
-            <img src="images/chess-banner-thin.jpg" alt="" width="1280" height="191">
+            <img src="/images/chess-banner-thin.jpg" alt="" width="1280" height="191">
             <br>
             <h1>Anmeldedaten überprüfen</h1>
             <h2>Schritt 3 von 3</h2>
