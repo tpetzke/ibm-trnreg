@@ -6,9 +6,9 @@
   </head>
   <body>
       <div  id="container">
-        <img src="images/chess-banner.jpg" alt="" border="0" width="1280" height="331">
+        <img src="/images/chess-banner.jpg" alt="" width="1280" height="331">
         <h1>Turnier Setup</h1>
-        <form class="setupform" id="formTournamentSetup" name="setup" method="post" action="/setup">
+        <form class="setupform" id="formTournamentSetup" name="setup" method="post" action="/admin/setup">
             <input id="name" class="input" type="text" placeholder="Turniername" name="name" value="<%= data.docs[0].tournament.name %>"/>
             <input id="date" class="input" type="text" placeholder="Datum" name="date" value="<%= data.docs[0].tournament.date %>"/>
             <input id="location" class="input" type="text" placeholder="Ort" name="location" value="<%= data.docs[0].tournament.location %>"/>
