@@ -28,7 +28,8 @@ router.post('/setup', function (req, res) {
 
   // Set our internal DB variable
   var db = req.db;
-
+  var dewisdb = req.dewisdb;
+  
   // Get our form values. These rely on the "name" attributes
   var _id = req.body._id;
   var _rev = req.body._rev;
@@ -43,7 +44,7 @@ router.post('/setup', function (req, res) {
 
   var action = req.body.submit;
   
-  // Update tournanemt in the database    
+  // Update tournament in the database    
   var tournament_doc = {
     _id: _id,
     _rev: _rev,
@@ -55,7 +56,41 @@ router.post('/setup', function (req, res) {
     description : description,
     groups: groups
   }} 
-  db.insert(tournament_doc).then(console.log);
+  
+  if (action=="update")
+  {
+    db.insert(tournament_doc).then(console.log);
+  }  
+
+  if (action=="init")
+  {
+    console.log("Init Request received")
+  }
+
+  if (action=="refresh")
+  {
+    db.list({include_docs:true}, function (err, players) {
+      
+      console.log("players found: "+players.rows.length);
+      dewisdb.list({include_docs:true}, function (dewis_err, dewis) {
+        console.log("dewis records found: "+dewis.rows.length);
+
+        var docs = [];
+        players.rows.forEach(element => {
+          if(element.doc.dewis) {
+            j=0;
+            while(j<dewis.rows.length && dewis.rows[j].doc._id !== element.doc.dewis) j++;
+            if (j<dewis.rows.length) {
+              var player = {_id: element.doc._id, _rev:element.doc._rev, Firstname: element.doc.Firstname, Lastname: element.doc.Lastname, DWZ: dewis.rows[j].doc.DWZ, ELO: dewis.rows[j].doc.ELO, Group: element.doc.Group, Sex: element.doc.Sex, Club: dewis.rows[j].doc.Club, email: element.doc.email, dewis: element.doc.dewis };
+              docs.push(player);
+            }    
+          }
+        });
+        
+        db.bulk({ docs:docs }, function(err) { if (err) { throw err; }});  
+      });  
+    });
+  };
 
   // retrieve the record again from the database and forward to the index page
   var query = {
