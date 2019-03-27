@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Anmeldung überprüfen</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+     <form id="formVerify" name="verifyuser" method="post" action="/addplayer">
+        <input type="hidden" id="firstname" name="firstname" value="<%=Firstname%>">
+        <input type="hidden" id="lastname" name="lastname" value="<%=Lastname%>">
+        <input type="hidden" id="dwz" name="dwz" value="<%=DWZ%>">
+        <input type="hidden" id="elo" name="elo" value="<%=ELO%>">
+        <input type="hidden" id="email" name="email" value="<%=email%>">
+        <input type="hidden" id="group" name="group" value="<%=Group%>">
+        <input type="hidden" id="sex" name="sex" value="<%=Sex%>">
+        <input type="hidden" id="club" name="club" value="<%=Club%>">
+        <input type="hidden" id="dewisid" name="dewisid" value="<%=dewisid%>">
+
+        <% var geschlecht = "Männlich"; if (Sex=="female") geschlecht="Weiblich"; %>
+        
+        <div  id="container">
+            <img src="images/chess-banner-thin.jpg" alt="" width="1280" height="191">
+            <br>
+            <h1>Anmeldedaten überprüfen</h1>
+            <h2>Schritt 3 von 3</h2>
+            <table id="players">
+                <tr>
+                <td>Vorname</td>
+                <td><%=Firstname%></td>
+                </tr>
+                <tr>
+                <td>Nachname</td>
+                <td><%=Lastname%></td>
+                </tr>
+                <tr>
+                <td>Geschlecht</td>
+                <td><%=geschlecht%></td>
+                </tr>
+                <tr>
+                <td>Email</td>
+                <td><%=email%></td>
+                </tr>
+                <tr>
+                <td>Verein</td>
+                <td><%=Club%></td>
+                </tr>
+                <tr>
+                <td>DWZ</td>
+                <td><%=DWZ%></td>
+                </tr>
+                <tr>
+                <td>ELO</td>
+                <td><%=ELO%></td>
+                </tr>
+                <tr>
+                    <td>Turniergruppe</td>
+                    <td><%=Group%></td>
+                </tr>
+            </table>
+            <div id="index_button_container">
+            <button id="btnSubmit" class="blue-button" name="submitted" value="save">Anmeldung abschliessen</button>
+            <button id="btnSubmit" class="red-button" name="submitted" value="cancel">Anmeldung abbrechen</button>
+            </div>
+        </form>
+        <!-- The footer -->
+        <div id="footer_bar">
+        <h3>Copyright (c) 2019, <a href="http://www.fam-petzke.de">Thomas Petzke</a></h3>
+        </div>
+    </div>
+  </body>
+</html>

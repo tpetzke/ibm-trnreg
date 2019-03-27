@@ -170,6 +170,9 @@ router.post('/lookup_player', function(req, res, next) {
   var firstname = req.body.firstname.trim();
   var lastname = req.body.lastname.trim();
 
+  firstname = firstname.charAt(0).toUpperCase() + firstname.slice(1);
+  lastname = lastname.charAt(0).toUpperCase() + lastname.slice(1);
+
   var query = {
       "selector": {
           "Name": lastname+","+firstname
@@ -208,6 +211,10 @@ router.post('/verifyplayer', function (req, res) {
   var sex = req.body.sex;
   var club = req.body.club.trim();
   var dewisid = req.body.dewisid;
+
+  firstname = firstname.charAt(0).toUpperCase() + firstname.slice(1);
+  lastname = lastname.charAt(0).toUpperCase() + lastname.slice(1);
+  club = club.charAt(0).toUpperCase() + club.slice(1);
 
   // And forward to verify page
   res.render("addplayer3", { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, dewisid: dewisid });
