@@ -192,8 +192,8 @@ router.post('/lookup_player', function(req, res, next) {
   });
 });
 
-/* POST to Add Player Service */
-router.post('/addplayer', function (req, res) {
+/* POST to Verify Service */
+router.post('/verifyplayer', function (req, res) {
 
   // Set our internal DB variable
   var db = req.db;
@@ -209,15 +209,40 @@ router.post('/addplayer', function (req, res) {
   var club = req.body.club.trim();
   var dewisid = req.body.dewisid;
 
-  var group_desc = group;
-  if (sex=="female") group_desc += " (weiblich)";
+  // And forward to verify page
+  res.render("addplayer3", { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, dewisid: dewisid });
+});
 
-  // Insert player to the database    
-  var newplayer = { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, dewis: dewisid };
-  db.insert(newplayer).then(console.log);
 
-  // And forward to success page
-  res.render("success", { Name: firstname + ' ' + lastname, Group: group_desc });
+/* POST to Add Player Service */
+router.post('/addplayer', function (req, res) {
+
+  if (req.body.submitted == "save")
+  {
+    // Set our internal DB variable
+    var db = req.db;
+
+    // Get our form values. These rely on the "name" attributes
+    var firstname = req.body.firstname.trim();
+    var lastname = req.body.lastname.trim();
+    var dwz = req.body.dwz;
+    var elo = req.body.elo;
+    var email = req.body.email;
+    var group = req.body.group;
+    var sex = req.body.sex;
+    var club = req.body.club.trim();
+    var dewisid = req.body.dewisid;
+
+    var group_desc = group;
+    if (sex=="female") group_desc += " (weiblich)";
+
+    // Insert player to the database    
+    var newplayer = { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, dewis: dewisid };
+    db.insert(newplayer).then(console.log);
+
+    // And forward to success page
+    res.render("success", { Name: firstname + ' ' + lastname, Group: group_desc });
+  } else res.redirect("/");
 });
 
 /* POST to Tournament Update */
