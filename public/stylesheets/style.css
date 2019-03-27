@@ -14,6 +14,14 @@
        url('../fonts/ibm-plex-sans-v5-latin-regular.svg#IBMPlexSans') format('svg'); /* Legacy iOS */
 }
 
+label {
+  display:block;
+  margin-left: 20px;
+  margin-top: 5px;
+  font-size: 12px;
+  color: #0074E1;
+}
+
 /* Style the main menu */
 #main_mnu_bar
 {
@@ -170,7 +178,7 @@ p {
       background-color: #1B9CE5
 }
 
-.input[type="text"], select {
+.input[type="text"], input[type="email"], select {
   width: 400px;
   padding: 12px 20px;
   margin: 10px 20px;
@@ -246,6 +254,3 @@ textarea {
 {
     color: #ff9a66;
 }
-
-
-

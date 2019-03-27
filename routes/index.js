@@ -152,23 +152,43 @@ router.get('/', function(req, res, next) {
     
   });
   
+/* GET add player Step 1 
+   Record Firstname and Lastname of the user */
+router.get('/addplayer1', function(req, res, next) {
+    res.render('addplayer1');
+});
 
-/* GET add player. */
-router.get('/addplayer', function(req, res, next) {
+/* POST add player Step 1 
+   Firstname and Lastname are entered. 
+   Lookup the user in the DEWIS Database 
+   Lookup the tournament data and forward to step 2 */
+router.post('/lookup_player', function(req, res, next) {
 
+  // Set our internal DB variable
+  var dewisdb = req.dewisdb;
   var db = req.db;
-  
+  var firstname = req.body.firstname.trim();
+  var lastname = req.body.lastname.trim();
+
   var query = {
+      "selector": {
+          "Name": lastname+","+firstname
+      }
+  };
+
+  dewisdb.find(query, function (err, dewis) {
+    
+    var query = {
       "selector": {
           "tournament": {
               "$gt": ""
           }
       }
-  };
+    };
 
-  db.find(query, function (err, data) {
-    // 'data' contains results
-    res.render('addplayer', { title: 'Spieler anmelden', data: data });
+    db.find(query, function (err, tournament) {
+      res.render('addplayer2', { title: 'Spieler anmelden', firstname : firstname, lastname : lastname, tournament : tournament.docs[0].tournament, dewis: dewis });
+    });
   });
 });
 
@@ -187,12 +207,13 @@ router.post('/addplayer', function (req, res) {
   var group = req.body.group;
   var sex = req.body.sex;
   var club = req.body.club.trim();
+  var dewisid = req.body.dewisid;
 
   var group_desc = group;
   if (sex=="female") group_desc += " (weiblich)";
 
   // Insert player to the database    
-  var newplayer = { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email };
+  var newplayer = { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, dewis: dewisid };
   db.insert(newplayer).then(console.log);
 
   // And forward to success page
