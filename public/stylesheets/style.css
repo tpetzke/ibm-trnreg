@@ -16,9 +16,9 @@
 
 label {
   display:block;
-  margin-left: 20px;
-  margin-top: 5px;
-  font-size: 12px;
+  margin-left: 15px;
+  margin-top: 4px;
+  font-size: 9px;
   color: #0074E1;
 }
 
@@ -37,15 +37,15 @@ label {
 {
     float:left;
     list-style:none;
-    margin: 8px 0 0 10px;
+    margin: 6px 0 0 8px;
 }
 
 #main_mnu_bar ul li
 {
     float:left;
     font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 16px;
-    padding:8px 10px;
+    font-size: 12px;
+    padding:6px 8px;
 }
 
 #main_mnu_bar ul li a
@@ -64,15 +64,15 @@ label {
 
 #players {
   font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
+  font-size: 12px;
   border-collapse: collapse;
   width: 60%;
-  margin: 20px;
+  margin: 15px;
 }
 
 #players td, #players th {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 6px;
 }
 
 #players tr:nth-child(even){background-color: #f2f2f2;}
@@ -80,8 +80,8 @@ label {
 #players tr:hover {background-color: #ddd;}
 
 #players th {
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 9px;
+  padding-bottom: 9px;
   text-align: left;
   background-color:#F79E02;
   color: white;
@@ -93,84 +93,84 @@ body {
     background:#dfe8ec url(/images/page_bg.png) repeat-x 0 0;
     text-align:center;
     font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 16px;
+    font-size: 12px;
 }
 
 #container {
-  margin: 0 auto; width: 1280px; text-align:left;
+  margin: 0 auto; width: 940px; text-align:left;
   background:#F7F9FB;
 }
 
 h1 {
   font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 48px;
-  margin: 20px;
+  font-size: 36px;
+  margin: 15px;
 }
 
 h2 {
   font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 36px;
-  margin: 20px;
+  font-size: 24px;
+  margin: 15px;
 }
 
 h3 {
   font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 24px;
-  margin: 20px;
+  font-size: 18px;
+  margin: 15px;
 }
 
 p {
   font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  margin: 20px;
+  font-size: 12px;
+  margin: 15px;
 }
 
 #index_button_container
 {
     float:top;
-    height:100px;
-    width:1280px;
+    height:75px;
+    width:940px;
     margin:0px auto 0  auto;
     text-align:left;
 }
 
 .blue-button {
-  margin: 20px;
+  margin: 15px;
   background-color: #0074E1;
   border: none;
   color: white;
-  padding: 15px 25px;
+  padding: 12px 18px;
   text-align: center;
   font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
-  font-size: 24px;
+  font-size: 18px;
   cursor: pointer;
   border-radius: 12px;
 }
 
 .orange-button {
-  margin: 20px;
+  margin: 15px;
   background-color: #F79E02;
   border: none;
   color: white;
-  padding: 15px 25px;
+  padding: 12px 18px;
   text-align: center;
   font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
-  font-size: 24px;
+  font-size: 18px;
   cursor: pointer;
   border-radius: 12px;
 }
 
 .red-button {
-  margin: 20px;
+  margin: 15px;
   background-color: #c04203;
   border: none;
   color: white;
-  padding: 15px 25px;
+  padding: 12px 18px;
   text-align: center;
   font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
-  font-size: 24px;
+  font-size: 18px;
   cursor: pointer;
-  border-radius: 12px;
+  border-radius: 9px;
 }
 
 
@@ -179,48 +179,48 @@ p {
 }
 
 .input[type="text"], input[type="email"], select {
-  width: 400px;
-  padding: 12px 20px;
-  margin: 10px 20px;
+  width: 300px;
+  padding: 9px 15px;
+  margin: 8px 15px;
   display: inline-block;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
-  font-size: 16px;
-}
-
-.input-long[type="text"] {
-  width: 1200px;
-  padding: 12px 20px;
-  margin: 10px 16px;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 3px;
   box-sizing: border-box;
   font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
   font-size: 12px;
 }
 
-.input[type="number"] {
-  width: 100px;
-  padding: 12px 20px;
-  margin: 10px 20px;
+.input-long[type="text"] {
+  width: 900px;
+  padding: 9px 15px;
+  margin: 8px 12px;
   display: inline-block;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 3px;
   box-sizing: border-box;
   font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
-  font-size: 16px;
+  font-size: 9px;
+}
+
+.input[type="number"] {
+  width: 75px;
+  padding: 9px 15px;
+  margin: 8px 15px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
+  font-size: 12px;
 }
 
 textarea {
   font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
-  font-size: 24px;
-  margin: 20px 20px;
-  padding: 12px 20px;
+  font-size: 18px;
+  margin: 15px 15px;
+  padding: 9px 15px;
   line-height: 1.5;
-  border-radius: 4px;
+  border-radius: 3px;
   box-sizing: border-box;
   border: 1px solid #ccc;
 }
@@ -229,23 +229,23 @@ textarea {
 #footer_bar
 {
     clear:both;
-    height:40px;
-    width:1280px;
+    height:30px;
+    width:940px;
     background:url(/images/footer_bg.png) repeat-x 0 0;
 }
 
 #footer_bar h3
 {
     font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
-    font-size: 12px;
+    font-size: 9px;
     color:#999999;
-    padding:18px 0 0 18px;
+    padding:14px 0 0 14px;
 }
 
 #footer_bar a
 {
   font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
-  font-size: 12px;
+  font-size: 9px;
   color:#999999;
   text-decoration: none;
 }

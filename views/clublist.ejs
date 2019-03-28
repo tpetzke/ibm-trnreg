@@ -6,16 +6,7 @@
   </head>
   <body>
     <div id="container">
-        <div id="main_mnu_bar">
-            <ul>
-               <li id="announcement"><a href="<%= tournament.url %>">Ausschreibung</a></li>
-               <% for(i = 0; i < tournament.groups.length; i++) { %> 
-                <li id="<%= tournament.groups[i] %>"><a href="/group?idx=<%=i%>"><%= tournament.groups[i] %></a></li>
-               <% } %> 
-               <li id="clublist"><a href="/clublist">Vereine</a></li>
-            </ul>
-        </div>
-        <img src="images/chess-banner-thin.jpg" alt="" width="1280" height="191">
+        <%- include partials/main-mnu.ejs %>
         <h3>Gemeldete Spieler pro Verein</h3>
         <table id="players">
             <tr>
