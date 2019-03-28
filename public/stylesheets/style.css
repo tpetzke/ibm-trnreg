@@ -16,7 +16,7 @@
 
 label {
   display:block;
-  margin-left: 15px;
+  margin-left: 18px;
   margin-top: 4px;
   font-size: 9px;
   color: #0074E1;
@@ -181,7 +181,7 @@ p {
 .input[type="text"], input[type="email"], select {
   width: 300px;
   padding: 9px 15px;
-  margin: 8px 15px;
+  margin: 2px 15px 8px 15px;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 3px;
@@ -193,7 +193,7 @@ p {
 .input-long[type="text"] {
   width: 900px;
   padding: 9px 15px;
-  margin: 8px 12px;
+  margin: 2px 15px 8px 15px;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 3px;
@@ -205,7 +205,7 @@ p {
 .input[type="number"] {
   width: 75px;
   padding: 9px 15px;
-  margin: 8px 15px;
+  margin: 2px 15px 8px 15px;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 3px;

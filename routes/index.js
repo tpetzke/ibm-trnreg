@@ -18,7 +18,10 @@ router.get('/', function(req, res, next) {
 
   db.find(query, function (err, tournament) {
       // 'tournament' contains results
-      res.render('index', { tournament: tournament.docs[0].tournament });
+
+      db.view('app', 'player-count', function(err, player) {
+        res.render('index', { tournament: tournament.docs[0].tournament, playercnt: player.rows[0].value });
+      });
   });
 
 });

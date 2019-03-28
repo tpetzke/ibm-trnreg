@@ -60,13 +60,14 @@ router.post('/verifyplayer', function (req, res) {
   var sex = req.body.sex;
   var club = req.body.club.trim();
   var dewisid = req.body.dewisid;
+  var datetime = Date.now();
 
   firstname = firstname.charAt(0).toUpperCase() + firstname.slice(1);
   lastname = lastname.charAt(0).toUpperCase() + lastname.slice(1);
   club = club.charAt(0).toUpperCase() + club.slice(1);
 
   // And forward to verify page
-  res.render("addplayer3", { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, dewisid: dewisid });
+  res.render("addplayer3", { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, dewisid: dewisid });
 });
 
 
@@ -88,12 +89,13 @@ router.post('/addplayer', function (req, res) {
     var sex = req.body.sex;
     var club = req.body.club.trim();
     var dewisid = req.body.dewisid;
+    var datetime = req.body.datetime;
 
     var group_desc = group;
     if (sex=="female") group_desc += " (weiblich)";
 
     // Insert player to the database    
-    var newplayer = { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, dewis: dewisid };
+    var newplayer = { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, dewis: dewisid };
     db.insert(newplayer).then(console.log);
 
     // And forward to success page

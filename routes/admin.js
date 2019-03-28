@@ -35,6 +35,7 @@ router.post('/setup', function (req, res) {
   var _rev = req.body._rev;
   var name = req.body.name;
   var date = req.body.date;
+  var capacity = req.body.capacity;
   var location = req.body.location
   var description = req.body.description;
   var announcement= req.body.announcement;
@@ -54,6 +55,7 @@ router.post('/setup', function (req, res) {
     date: date,
     url: announcement,
     description : description,
+    capacity : capacity,
     groups: groups
   }} 
   

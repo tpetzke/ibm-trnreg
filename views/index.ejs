@@ -7,9 +7,11 @@
   <body>
       <div  id="container">
         <%- include partials/main-mnu.ejs %>
+        <% var capacity_info = ""; if(tournament.capacity !== 0) capacity_info = " Die Turnierkapaziät liegt bei "+tournament.capacity+" Spielern." %>
         <h1><%= tournament.name %></h1>
         <h3><%= tournament.date %> in <%= tournament.location %></h3>
-        <p><%= tournament.description %></p>
+        <p><%= tournament.description %><%=capacity_info%></p>
+        <p>Aktuell gemeldete Spieler : <b><%=playercnt%></b></p>
         <div id="index_button_container">
         <form action="/player/addplayer1">
           <input type="submit" class="orange-button" value="Zur Turnieranmeldung" />
