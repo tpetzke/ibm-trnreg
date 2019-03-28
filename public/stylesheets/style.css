@@ -199,7 +199,7 @@ p {
   border-radius: 3px;
   box-sizing: border-box;
   font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .input[type="number"] {
