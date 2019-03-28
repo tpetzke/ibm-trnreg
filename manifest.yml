@@ -1,6 +1,11 @@
 ---
 applications:
- - name: Tournament Registration
-   random-route: true
+ - name: 'Tournament Registration'
+   random-route: false   
    memory: 256M
    instances: 1
+   routes:
+   - route: http://treg.eu-de.mybluemix.net
+
+
+
