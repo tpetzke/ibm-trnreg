@@ -1,0 +1,6 @@
+---
+applications:
+ - name: Tournament Registration
+   random-route: true
+   memory: 256M
+   instances: 1
