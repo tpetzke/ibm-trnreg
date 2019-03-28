@@ -5,6 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+
 // load local VCAP configuration  and service credentials
 var vcapLocal;
 try {
