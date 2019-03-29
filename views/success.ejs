@@ -10,6 +10,27 @@
         <br>
         <h1>Willkommen im Turnier, <%= Name %></h1>
         <h3>Die Anmeldung erfolgte für die Turniergruppe <%= Group %></h3>
+        <table id="players">
+            <tr>
+            <th>Information</th>
+            <th>Status</th>
+            </tr>
+            <tr>
+              <td>Anmelde-Nummer</td>
+              <td><%=playercnt+1%></td>
+            </tr>
+            <tr>
+              <td>Status</td>
+              <% var ss = "bestätigt"; if (status == "waitlisted") ss = "Warteliste"; %>
+              <td><%=ss%></td>
+            </tr>
+            <% if (status == "waitlisted") { %>
+              <tr>
+                  <td>Position</td>
+                  <td><%=playercnt - capacity + 1%></td>
+              </tr>
+            <% } %>
+        </table>    
         <br>
         <div id="index_button_container">
         <br>

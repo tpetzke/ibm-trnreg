@@ -12,6 +12,7 @@
         <form id="formAddUser" name="adduser" method="post" action="/player/verifyplayer">
             <% var id=""; if (dewis.docs.length) id = dewis.docs[0]._id; %>
             <input id="dewisid" name="dewisid" type="hidden" value="<%=id%>">
+            <input id="capacity" name="capacity" type="hidden" value="<%=tournament.capacity%>">
             <div style="float:left;margin-right:20px;">
             <label for="inputFirstname">Vorname</label>
             <input id="inputFirstname" class="input" type="text" placeholder="Vorname" name="firstname" value="<%= firstname %>" />

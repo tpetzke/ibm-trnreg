@@ -20,8 +20,10 @@
             <% for (i=0; i < data.docs.length; i++) { 
               var a = "";
               if (data.docs[i].Sex == "female") a = "w";
+              var ss = "confirmed";
+              if (data.docs[i].status) ss = data.docs[i].status;
               %>
-            <tr>
+            <tr class="<%=ss%>">
               <td style="text-align:center"><%= i+1 %></td>
               <td><%= data.docs[i].Firstname + " " + data.docs[i].Lastname %></td>
               <td style="text-align:center"><%= a %></td>

@@ -70,6 +70,14 @@ label {
   margin: 15px;
 }
 
+#players .confirmed td {
+  color: #000000;
+}
+
+#players .waitlisted td {
+  color: #999999;
+}
+
 #players td, #players th {
   border: 1px solid #ddd;
   padding: 6px;

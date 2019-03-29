@@ -71,22 +71,38 @@ router.post('/setup', function (req, res) {
 
   if (action=="refresh")
   {
-    db.list({include_docs:true}, function (err, players) {
+    var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": [{"datetime": "asc"}]};  
+
+    db.find(query, function (err, players) {
       
-      console.log("players found: "+players.rows.length);
+      console.log("players found: "+players.docs.length);
       dewisdb.list({include_docs:true}, function (dewis_err, dewis) {
         console.log("dewis records found: "+dewis.rows.length);
 
         var docs = [];
-        players.rows.forEach(element => {
-          if(element.doc.dewis) {
+     
+        players.docs.forEach(element => {
+
+          // check whether we have to change the status of the player due to cancellations or capacity changes
+          var newstatus; 
+          var newdwz = element.DWZ;
+          var newelo = element.ELO;
+          var newclub = element.Club;
+          
+          if (docs.length +1 < capacity) newstatus = "confirmed"; else newstatus = "waitlisted";
+
+          if(element.dewis) {
             j=0;
-            while(j<dewis.rows.length && dewis.rows[j].doc._id !== element.doc.dewis) j++;
+            while(j<dewis.rows.length && dewis.rows[j].doc._id !== element.dewis) j++;
             if (j<dewis.rows.length) {
-              var player = {_id: element.doc._id, _rev:element.doc._rev, Firstname: element.doc.Firstname, Lastname: element.doc.Lastname, DWZ: dewis.rows[j].doc.DWZ, ELO: dewis.rows[j].doc.ELO, Group: element.doc.Group, Sex: element.doc.Sex, Club: dewis.rows[j].doc.Club, email: element.doc.email, dewis: element.doc.dewis };
-              docs.push(player);
-            }    
+              newdwz = dewis.rows[j].doc.DWZ;
+              newelo = dewis.rows[j].doc.ELO;
+              newclub = dewis.rows[j].doc.Club;
+            }
           }
+
+          var player = {_id: element._id, _rev:element._rev, Firstname: element.Firstname, Lastname: element.Lastname, DWZ: newdwz, ELO: newelo, Group: element.Group, Sex: element.Sex, Club: newclub, email: element.email, dewis: element.dewis, status: newstatus, datetime: element.datetime };
+          docs.push(player);
         });
         
         db.bulk({ docs:docs }, function(err) { if (err) { throw err; }});  
@@ -105,7 +121,11 @@ router.post('/setup', function (req, res) {
 
   db.find(query, function (err, tournament) {
     // 'tournament' contains results
-    res.render('index', { tournament: tournament.docs[0].tournament });
+
+    db.view('app', 'player-count', function(err, player) {
+      if (err) console.log(err);
+      res.render('index', { tournament: tournament.docs[0].tournament, playercnt: player.rows[0].value });
+    });
   });
 });
 
