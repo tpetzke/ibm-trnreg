@@ -97,6 +97,31 @@ label {
 
 /* Player Table List End */
 
+/* Sortable Tables */
+table.sortable
+{
+  font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 12px;
+  border-collapse: collapse;
+  width: 95%;
+  margin: 15px;
+}
+
+table.sortable th, table.sortable td {
+  border: 1px solid #ddd;
+  padding: 6px;
+}
+
+table.sortable tr:nth-child(even){background-color: #f2f2f2;}
+
+table.sortable thead {
+  padding-top: 9px;
+  padding-bottom: 9px;
+  text-align: left;
+  background-color:#F79E02;
+  color: white;
+}
+
 body {
     background:#dfe8ec url(/images/page_bg.png) repeat-x 0 0;
     text-align:center;

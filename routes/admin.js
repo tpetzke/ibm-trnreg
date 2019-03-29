@@ -129,4 +129,31 @@ router.post('/setup', function (req, res) {
   });
 });
 
+/* GET all player page.
+   Read the Tournament data from the DB to prefill the tournament input fields */
+   router.get('/allplayer', function(req, res, next) {
+  
+    // Set our internal DB variable
+    var db = req.db;
+  
+    var query = {
+        "selector": {
+            "tournament": {
+                "$gt": ""
+            }
+        }
+    };
+  
+    db.find(query, function (err, tournament) {
+
+      var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": [{"datetime": "asc"}]};  
+      db.find(query, function (err, players) {
+
+        res.render('allplayer', { tournament: tournament.docs[0].tournament, players: players });
+      });
+    });
+    
+  });
+
+
 module.exports = router;

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Spieler Administration</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/sorttable.js"></script>
+  </head>
+  <body>
+      <div  id="container">
+        <%- include partials/main-mnu.ejs %>
+        <table class="sortable">
+        <thead>
+           <th style="text-align:center">Nr.</th>
+           <th>Spieler</th>
+           <th style="text-align:center">A</th>
+           <th style="text-align:center">ELO</th>
+           <th style="text-align:center">DWZ</th>
+           <th>Verein</th>
+           <th style="text-align:center">Gruppe</th>
+           <th style="text-align:center">Status</th>
+           <th>Anmeldung</th>
+           <th>email</th>
+        </thead>
+        <% for(i=0; i < players.docs.length; i++) { 
+          var a = ""; if (players.docs[i].Sex=="female") a="w";   
+          var tm = new Date();
+          tm.setTime(players.docs[i].datetime);
+          var ts = tm.toString().slice(4,21); 
+        %>
+        <tr>
+           <td style="text-align:center"><%=i+1%></td>
+           <td><%=players.docs[i].Lastname+", "+players.docs[i].Firstname %></td>
+           <td style="text-align:center"><%=a%></td>
+           <td style="text-align:center"><%=players.docs[i].ELO %></td>
+           <td style="text-align:center"><%=players.docs[i].DWZ %></td>
+           <td><%=players.docs[i].Club %></td>
+           <td style="text-align:center"><%=players.docs[i].Group %></td>
+           <td style="text-align:center"><img src="/images/<%=players.docs[i].status%>-icon.png" alt="st" width="16" height="16"></td>
+           <td><%=ts %></td>
+           <td><%=players.docs[i].email %></td>
+        </tr> 
+        <% } %>   
+        </table>
+        <div id="index_button_container">
+           <br> 
+           <a href='/' class="blue-button">Zurück zur Homepage</a>
+        </div>
+        <%- include partials/footer.ejs %>
+      </div>
+  </body>
+</html>
