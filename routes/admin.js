@@ -71,7 +71,8 @@ router.post('/setup', function (req, res) {
 
   if (action=="refresh")
   {
-    var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": [{"datetime": "asc"}]};  
+    // sort players by status and then by datetime, confirmed players are always ordered before waitlisted players
+    var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": ["status","datetime"]};  
 
     db.find(query, function (err, players) {
       
@@ -146,7 +147,7 @@ router.post('/setup', function (req, res) {
   
     db.find(query, function (err, tournament) {
 
-      var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": [{"datetime": "asc"}]};  
+      var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": ["status","datetime"]};  
       db.find(query, function (err, players) {
 
         res.render('allplayer', { tournament: tournament.docs[0].tournament, players: players });
