@@ -29,7 +29,7 @@
         %>
         <tr>
            <td style="text-align:center"><%=i+1%></td>
-           <td><%=players.docs[i].Lastname+", "+players.docs[i].Firstname %></td>
+           <td><a href="/admin/player/id/<%=players.docs[i]._id%>"><%=players.docs[i].Lastname+", "+players.docs[i].Firstname %></a></td>
            <td style="text-align:center"><%=a%></td>
            <td style="text-align:center"><%=players.docs[i].ELO %></td>
            <td style="text-align:center"><%=players.docs[i].DWZ %></td>

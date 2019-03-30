@@ -112,6 +112,11 @@ table.sortable th, table.sortable td {
   padding: 6px;
 }
 
+table.sortable td a, a:visited {
+  text-decoration: none;
+  color:#09139b;
+}
+
 table.sortable tr:nth-child(even){background-color: #f2f2f2;}
 
 table.sortable thead {
@@ -172,12 +177,18 @@ p {
   background-color: #0074E1;
   border: none;
   color: white;
+  text-decoration: none;
   padding: 12px 18px;
   text-align: center;
   font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
   font-size: 18px;
   cursor: pointer;
   border-radius: 12px;
+}
+
+.blue-button a, a:visited, a:hover {
+  text-decoration: none;
+  color: white;
 }
 
 .orange-button {

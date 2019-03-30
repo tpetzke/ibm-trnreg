@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Anmeldung</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+      <div  id="container">
+        <%- include partials/main-mnu.ejs %>
+        <h1>Spielerdaten ändern</h1>
+        <form id="formModUser" name="moduser" method="post" action="/admin/modifyplayer">
+            <input id="_id" name="_id" type="hidden" value="<%=player._id%>">
+            <div style="float:left;margin-right:20px;">
+            <label for="inputFirstname">Vorname</label>
+            <input id="inputFirstname" class="input" type="text" placeholder="Vorname" name="firstname" value="<%=player.Firstname %>" />
+            </div>
+            <div style="float:left;">
+              <label for="inputLastname">Nachname</label>
+              <input id="inputLastname" class="input" type="text" placeholder="Nachname" name="lastname" value="<%=player.Lastname %>"/>
+            </div>  
+            <br style="clear:both">
+            <div style="float:left;margin-right:20px;">
+            <label for="inputDWZ">DWZ</label>
+            <input id="inputDWZ" class="input" type="number" placeholder="DWZ" name="dwz" value="<%=player.DWZ%>"/>
+            </div>
+            <div style="float:left;">
+            <label for="inputELO">ELO</label>
+            <input id="inputELO" class="input" type="number" placeholder="ELO" name="elo" value="<%=player.ELO%>"/>
+            </div>
+            <br style="clear:both;" />
+            
+            <% var selMale = "selected";
+               var selFemale = ""; 
+               if (player.Sex=="female") 
+               {
+                 selMale = "";
+                 selFemale = "selected"
+               }
+               var groupsel = [];
+               for (i=0; i<tournament.groups.length; i++) if (tournament.groups[i] == player.Group) groupsel.push("selected"); else groupsel.push(""); 
+
+               var selConfirmed = "selected";
+               var selWaitlisted = "";
+               if (player.status == "waitlisted")
+               {
+                   selConfirmed = "";
+                   selWaitlisted = "selected";
+               }
+            %>
+            <div style="float:left;margin-right:20px;">
+            <label for="selectGroup">Turniergruppe</label>
+            <select id="selectGroup" name="group" required>
+            <% for(i = 0; i < tournament.groups.length; i++) { %> 
+                    <option value="<%= tournament.groups[i] %>" <%=groupsel[i]%>><%= tournament.groups[i] %></option>
+            <% } %>
+            </select>
+            </div>
+            <div style="float:left">
+            <label for="selectSex">Geschlecht</label>
+              <select id="selectSex" name="sex">
+                    <option value="male" <%=selMale%>>Männlich</option>
+                    <option value="female" <%=selFemale%>>Weiblich</option>
+            </select>
+            </div>
+            <br style="clear:both">
+            <div style="float:left;margin-right:20px;">
+            <label for="inputVerein">Verein</label>
+            <input id="inputVerein" class="input" type="text" placeholder="Verein" name="club" value="<%=player.Club%>" />
+            </div>
+            <div style="float:left">
+              <label for="inputEmail">Email</label>
+              <input id="inputEmail" class="input" type="text" placeholder="Email" name="email" value="<%=player.email%>" required/>
+            </div>
+            <br style="clear:both">
+            <div style="float:left">
+            <label for="status">Status</label>
+              <select id="status" name="status">
+                    <option value="confirmed" <%=selConfirmed%>>Bestätigt</option>
+                    <option value="waitlisted" <%=selWaitlisted%>>Warteliste</option>
+            </select>
+            </div>
+            <br style="clear:both">
+            <button id="btnSubmit" name="submitted" class="blue-button" value="save">Speichern</button>
+            <button id="btnSubmit" name="submitted" class="red-button" value="back">Abbrechen</button>
+        </form>
+        
+
+        <%- include partials/footer.ejs %>
+      </div>
+  </body>
+</html>

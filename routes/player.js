@@ -92,7 +92,7 @@ router.post('/addplayer', function (req, res) {
     var dewisid = req.body.dewisid;
     var datetime = req.body.datetime;
     var capacity = req.body.capacity;
-    var status = "confirmed";
+    var status = "confirmed";         // init to default, will be checked below again 
 
     var group_desc = group;
     if (sex=="female") group_desc += " (weiblich)";
