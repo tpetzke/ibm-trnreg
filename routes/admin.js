@@ -68,49 +68,7 @@ router.post('/setup', function (req, res) {
   {
     console.log("Init Request received")
   }
-
-  if (action=="refresh")
-  {
-    // sort players by status and then by datetime, confirmed players are always ordered before waitlisted players
-    var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": ["status","datetime"]};  
-
-    db.find(query, function (err, players) {
-      
-      console.log("players found: "+players.docs.length);
-      dewisdb.list({include_docs:true}, function (dewis_err, dewis) {
-        console.log("dewis records found: "+dewis.rows.length);
-
-        var docs = [];
-     
-        players.docs.forEach(element => {
-
-          // check whether we have to change the status of the player due to cancellations or capacity changes
-          var newstatus; 
-          var newdwz = element.DWZ;
-          var newelo = element.ELO;
-          var newclub = element.Club;
-          
-          if (docs.length +1 < capacity) newstatus = "confirmed"; else newstatus = "waitlisted";
-
-          if(element.dewis) {
-            j=0;
-            while(j<dewis.rows.length && dewis.rows[j].doc._id !== element.dewis) j++;
-            if (j<dewis.rows.length) {
-              newdwz = dewis.rows[j].doc.DWZ;
-              newelo = dewis.rows[j].doc.ELO;
-              newclub = dewis.rows[j].doc.Club;
-            }
-          }
-
-          var player = {_id: element._id, _rev:element._rev, Firstname: element.Firstname, Lastname: element.Lastname, DWZ: newdwz, ELO: newelo, Group: element.Group, Sex: element.Sex, Club: newclub, email: element.email, dewis: element.dewis, status: newstatus, datetime: element.datetime };
-          docs.push(player);
-        });
-        
-        db.bulk({ docs:docs }, function(err) { if (err) { throw err; }});  
-      });  
-    });
-  };
-
+  
   // retrieve the record again from the database and forward to the index page
   var query = {
     "selector": {
@@ -129,6 +87,61 @@ router.post('/setup', function (req, res) {
     });
   });
 });
+
+/* Post to the refresh playerlist
+   Refresh the player list data by reading the dewis database and checking capacity constraints */
+  router.post('/refreshplayerlist', function(req, res, next) {
+
+    // Set our internal DB variable
+    var db = req.db;
+    var dewisdb = req.dewisdb;
+    
+    // Get our form values. These rely on the "name" attributes
+    var capacity = parseInt(req.body.capacity);
+
+    // sort players by status and then by datetime, confirmed players are always ordered before waitlisted players
+    var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": ["status","datetime"]};  
+
+    db.find(query, function (err, players) {
+      
+      console.log("players found: "+players.docs.length);
+      dewisdb.list({include_docs:true}, function (dewis_err, dewis) {
+        console.log("dewis records found: "+dewis.rows.length);
+
+        var docs = [];
+      
+        players.docs.forEach(element => {
+
+          // check whether we have to change the status of the player due to cancellations or capacity changes
+          var newstatus; 
+          var newdwz = element.DWZ;
+          var newelo = element.ELO;
+          var newclub = element.Club;
+          var name = element.Lastname+","+element.Firstname;
+
+          newstatus = element.status;
+          if (docs.length  < capacity) newstatus = "confirmed"; 
+
+          
+          j=0;
+          while(j<dewis.rows.length && dewis.rows[j].doc.Name !== name) j++;
+          if (j<dewis.rows.length) {
+            newdwz = dewis.rows[j].doc.DWZ;
+            newelo = dewis.rows[j].doc.ELO;
+            newclub = dewis.rows[j].doc.Club;
+          }
+
+          var player = {_id: element._id, _rev:element._rev, Firstname: element.Firstname, Lastname: element.Lastname, DWZ: newdwz, ELO: newelo, Group: element.Group, Sex: element.Sex, Club: newclub, email: element.email, dewis: element.dewis, status: newstatus, datetime: element.datetime };
+          docs.push(player);
+        });
+        
+        db.bulk({ docs:docs }, function(err) { if (err) { throw err; }});  
+        res.redirect('/admin/allplayer');
+      });  
+    });
+ 
+
+  });
 
 /* GET all player page.
    Read the Tournament data from the DB to prefill the tournament input fields */
