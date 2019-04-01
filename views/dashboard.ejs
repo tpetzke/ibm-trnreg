@@ -5,10 +5,69 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-      <div  id="container">
+      <div id="container">
         <%- include partials/main-mnu.ejs %>
-        <h1><%= tournament.name %></h1>
-        <h3>Turnierleiter Dashboard</h3>
+        <p>Angemeldet als: <%=user%></p>
+        <h1>Turnierleiter Dashboard</h1>
+        <h3><%= tournament.name %></h3>
+        <div class="dashboard-links">
+        <a href="/admin/setup">Turnier Setup</a>
+        <a href="/admin/allplayer">Spieler Liste</a>
+        </div>
+        <%
+            var males = 0, females = 0, waitlisted = 0;
+            for (i = 0; i < players.length; i++) {
+                if (players[i].Sex == "male") males++; else 
+                if (players[i].Sex == "female") females++;
+                if (players[i].status == "waitlisted") waitlisted++; 
+            }
+        %>
+
+        <div class="container">
+            <div class="tile blue">
+                <div class="header">
+                    <div class="count"><%=tournament.groups.length%></div>
+                    <div class="title">Gruppen</div>
+                </div>
+                <div class="body">
+                    <div class="title">im Turnier definiert</div>
+                </div>
+            </div>
+            <div class="tile ltgreen">
+                <div class="header">
+                    <div class="count"><%=players.length%></div>
+                    <div class="title">Spieler</div>
+                </div>
+                <div class="body">
+                    <div class="title">bereits angemeldet</div>
+                </div>
+            </div>
+            <div class="tile wide green">
+                <div class="header">
+                <div class="left">
+                    <div class="count"><%=males%></div>
+                    <div class="title">männliche</div>
+                </div>
+                <div class="right">
+                    <div class="count"><%=females%></div>
+                    <div class="title">weibliche</div>
+                </div>
+                </div>
+                <div class="body">
+                    <div class="title">Spieler angemeldet</div>
+                </div>
+            </div>
+            <div class="tile orange">
+                <div class="header">
+                    <div class="count"><%=waitlisted%></div>
+                    <div class="title">Spieler</div>
+                </div>
+                <div class="body">
+                    <div class="title">auf Warteliste</div>
+                </div>
+            </div>
+        </div>
+        <br style="clear:both">
         
         <%- include partials/footer.ejs %>
       </div>

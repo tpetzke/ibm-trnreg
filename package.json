@@ -8,6 +8,7 @@
   "dependencies": {
     "@cloudant/cloudant": "^4.0.0",
     "cfenv": "^1.2.1",
+    "client-sessions": "^0.8.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",

@@ -10,7 +10,11 @@
         </div>
         <div id="admin_mnu_bar">
             <ul>
+            <% if (user) { %>
+                <li id="logout"><a href="/logout">Logout</a></li>
+            <% } else { %>        
             <li id="Login"><a href="/login">Login</a></li>
+            <% } %>
             </ul>
         </div>
         <img src="/images/chess-banner.jpg" alt="" width="940" height="243">

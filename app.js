@@ -4,6 +4,7 @@ var cfenv = require("cfenv");
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('client-sessions');
 
 
 // load local VCAP configuration  and service credentials
@@ -66,10 +67,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Make our db accessible to our router
+// make our session object usable, timeout 30 minutes
+app.use(session({
+    cookieName: 'session',
+    secret: 'tournament-website-geheimnis',
+    duration: 30 * 60 * 1000,
+    activeDuration: 5 * 60 * 1000,
+}));
+
+// Make our db and session user name accessible to our router
 app.use(function (req, res, next) {
     req.db = playerdb;
     req.dewisdb = dewisdb;
+    res.locals.user = req.session.user;
     next();
 });
 

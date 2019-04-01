@@ -1,9 +1,19 @@
 var express = require('express');
 var router = express.Router();
 
+/* Global function that checks for a user in the http request and if not present forwards to the login page 
+   this is included in the function call that require a looged in user */ 
+function requireLogin (req, res, next) {
+  if (!req.session.user) {
+    res.redirect('/login');
+  } else {
+    next();
+  }
+};
+
 /* GET setup page.
    Read the Tournament data from the DB to prefill the tournament input fields */
-   router.get('/setup', function(req, res, next) {
+   router.get('/setup', requireLogin, function(req, res, next) {
   
     // Set our internal DB variable
     var db = req.db;
@@ -69,166 +79,169 @@ router.post('/setup', function (req, res) {
     console.log("Init Request received")
   }
   
-  // retrieve the record again from the database and forward to the index page
-  var query = {
-    "selector": {
-        "tournament": {
-            "$gt": ""
-        }
-    }
-  };
-
-  db.find(query, function (err, tournament) {
-    // 'tournament' contains results
-
-    db.view('app', 'player-count', function(err, player) {
-      if (err) console.log(err);
-      res.render('index', { tournament: tournament.docs[0].tournament, playercnt: player.rows[0].value });
-    });
-  });
+  res.redirect("/admin/dashboard");
 });
 
 /* Post to the refresh playerlist
    Refresh the player list data by reading the dewis database and checking capacity constraints */
-  router.post('/refreshplayerlist', function(req, res, next) {
+router.post('/refreshplayerlist', function(req, res, next) {
 
-    // Set our internal DB variable
-    var db = req.db;
-    var dewisdb = req.dewisdb;
+  // Set our internal DB variable
+  var db = req.db;
+  var dewisdb = req.dewisdb;
+  
+  // Get our form values. These rely on the "name" attributes
+  var capacity = parseInt(req.body.capacity);
+
+  // sort players by status and then by datetime, confirmed players are always ordered before waitlisted players
+  var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": ["status","datetime"]};  
+
+  db.find(query, function (err, players) {
     
-    // Get our form values. These rely on the "name" attributes
-    var capacity = parseInt(req.body.capacity);
+    console.log("players found: "+players.docs.length);
+    dewisdb.list({include_docs:true}, function (dewis_err, dewis) {
+      console.log("dewis records found: "+dewis.rows.length);
 
-    // sort players by status and then by datetime, confirmed players are always ordered before waitlisted players
-    var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": ["status","datetime"]};  
+      var docs = [];
+    
+      players.docs.forEach(element => {
 
-    db.find(query, function (err, players) {
-      
-      console.log("players found: "+players.docs.length);
-      dewisdb.list({include_docs:true}, function (dewis_err, dewis) {
-        console.log("dewis records found: "+dewis.rows.length);
+        // check whether we have to change the status of the player due to cancellations or capacity changes
+        var newstatus; 
+        var newdwz = element.DWZ;
+        var newelo = element.ELO;
+        var newclub = element.Club;
+        var name = element.Lastname+","+element.Firstname;
 
-        var docs = [];
-      
-        players.docs.forEach(element => {
+        newstatus = element.status;
+        if (docs.length  < capacity) newstatus = "confirmed"; 
 
-          // check whether we have to change the status of the player due to cancellations or capacity changes
-          var newstatus; 
-          var newdwz = element.DWZ;
-          var newelo = element.ELO;
-          var newclub = element.Club;
-          var name = element.Lastname+","+element.Firstname;
-
-          newstatus = element.status;
-          if (docs.length  < capacity) newstatus = "confirmed"; 
-
-          
-          j=0;
-          while(j<dewis.rows.length && dewis.rows[j].doc.Name !== name) j++;
-          if (j<dewis.rows.length) {
-            newdwz = dewis.rows[j].doc.DWZ;
-            newelo = dewis.rows[j].doc.ELO;
-            newclub = dewis.rows[j].doc.Club;
-          }
-
-          var player = {_id: element._id, _rev:element._rev, Firstname: element.Firstname, Lastname: element.Lastname, DWZ: newdwz, ELO: newelo, Group: element.Group, Sex: element.Sex, Club: newclub, email: element.email, dewis: element.dewis, status: newstatus, datetime: element.datetime };
-          docs.push(player);
-        });
         
-        db.bulk({ docs:docs }, function(err) { if (err) { throw err; }});  
-        res.redirect('/admin/allplayer');
-      });  
-    });
- 
+        j=0;
+        while(j<dewis.rows.length && dewis.rows[j].doc.Name !== name) j++;
+        if (j<dewis.rows.length) {
+          newdwz = dewis.rows[j].doc.DWZ;
+          newelo = dewis.rows[j].doc.ELO;
+          newclub = dewis.rows[j].doc.Club;
+        }
 
+        var player = {_id: element._id, _rev:element._rev, Firstname: element.Firstname, Lastname: element.Lastname, DWZ: newdwz, ELO: newelo, Group: element.Group, Sex: element.Sex, Club: newclub, email: element.email, dewis: element.dewis, status: newstatus, datetime: element.datetime };
+        docs.push(player);
+      });
+      
+      db.bulk({ docs:docs }, function(err) { if (err) { throw err; }});  
+      res.redirect('/admin/allplayer');
+    });  
   });
+
+
+});
 
 /* GET all player page.
    Read the Tournament data from the DB to prefill the tournament input fields */
-   router.get('/allplayer', function(req, res, next) {
+  router.get('/allplayer', requireLogin, function(req, res, next) {
+
+  // Set our internal DB variable
+  var db = req.db;
+
+  var query = {
+      "selector": {
+          "tournament": {
+              "$gt": ""
+          }
+      }
+  };
+
+  db.find(query, function (err, tournament) {
+
+    var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": ["status","datetime"]};  
+    db.find(query, function (err, players) {
+
+      res.render('allplayer', { tournament: tournament.docs[0].tournament, players: players });
+    });
+  });
   
+});
+
+/* GET single player maintenance page. The player id is given in the request as _id.
+  Read the Tournament data and player from the DB to prefill the player input fields */
+router.get('/player/id/:id', requireLogin, function(req, res, next) {
+
+  // Set our internal DB variable
+  var db = req.db;
+  var id = req.params.id;
+
+  var query = {
+      "selector": {
+          "tournament": {
+              "$gt": ""
+          }
+      }
+  };
+
+  db.find(query, function (err, tournament) {
+
+    var query = {"selector": {"_id": id}};  
+    db.find(query, function (err, players) {
+      if (players.docs.length) res.render('modplayer', { tournament: tournament.docs[0].tournament, player: players.docs[0] }); else res.redirect("/");
+    });
+  });
+  
+});
+
+/* POST from the modify player page
+    we have to check whether the pressed button was the save button then we save 
+    we will forward in both cases back to the player listing */
+router.post('/modifyplayer', function(req, res, next) {
+
+  if (req.body.submitted == "save")
+  {
     // Set our internal DB variable
     var db = req.db;
-  
-    var query = {
-        "selector": {
-            "tournament": {
-                "$gt": ""
-            }
-        }
-    };
-  
-    db.find(query, function (err, tournament) {
 
-      var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": ["status","datetime"]};  
-      db.find(query, function (err, players) {
+    // Get our form values. These rely on the "name" attributes
+    var firstname = req.body.firstname.trim();
+    var lastname = req.body.lastname.trim();
+    var dwz = req.body.dwz;
+    var elo = req.body.elo;
+    var email = req.body.email;
+    var group = req.body.group;
+    var sex = req.body.sex;
+    var club = req.body.club.trim();
+    var status = req.body.status;
+    var _id = req.body._id;
 
-        res.render('allplayer', { tournament: tournament.docs[0].tournament, players: players });
-      });
-    });
+    var query = {"selector": {"_id": _id}};   // lookup the player in the database
+    db.find(query, function(err, players) {
+      var player = players.docs[0];
+      console.log("id: "+_id+" _rev: "+player._rev);
+        // Update player in the database    
+      var updateplayer = { _id: _id, _rev: player._rev, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, datetime: player.datetime, status: status, dewis: player.dewisid };
+      db.insert(updateplayer).then(console.log);
     
-  });
+      res.redirect("/admin/allplayer");
+    }); 
+  } else res.redirect("/admin/allplayer");
+});
 
-  /* GET single player maintenance page. The player id is given in the request as _id.
-   Read the Tournament data and player from the DB to prefill the player input fields */
-  router.get('/player/id/:id', function(req, res, next) {
-  
-    // Set our internal DB variable
-    var db = req.db;
-    var id = req.params.id;
+/* GET Dashboard */
+router.get('/dashboard', requireLogin, function(req, res, next) {
 
-    var query = {
-        "selector": {
-            "tournament": {
-                "$gt": ""
-            }
-        }
-    };
-  
-    db.find(query, function (err, tournament) {
+  // Set our internal DB variable
+  var db = req.db;
 
-      var query = {"selector": {"_id": id}};  
-      db.find(query, function (err, players) {
-        if (players.docs.length) res.render('modplayer', { tournament: tournament.docs[0].tournament, player: players.docs[0] }); else res.redirect("/");
-      });
-    });
+  var query = {"selector": {"tournament": {"$gt": "" } } };
+
+  db.find(query, function (err, tournament) {
+    if (err) console.log(err);
+    var query = {"selector": {"Lastname": {"$gt": "" } } };
     
+    db.find(query, function (err, players) {
+      if (err) console.log(err);
+      res.render('dashboard', { tournament: tournament.docs[0].tournament, players: players.docs });
+    });
   });
+});
 
-  /* POST from the modify player page
-     we have to check whether the pressed button was the save button then we save 
-     we will forward in both cases back to the player listing */
-  router.post('/modifyplayer', function(req, res, next) {
-  
-    if (req.body.submitted == "save")
-    {
-      // Set our internal DB variable
-      var db = req.db;
-
-      // Get our form values. These rely on the "name" attributes
-      var firstname = req.body.firstname.trim();
-      var lastname = req.body.lastname.trim();
-      var dwz = req.body.dwz;
-      var elo = req.body.elo;
-      var email = req.body.email;
-      var group = req.body.group;
-      var sex = req.body.sex;
-      var club = req.body.club.trim();
-      var status = req.body.status;
-      var _id = req.body._id;
-
-      var query = {"selector": {"_id": _id}};   // lookup the player in the database
-      db.find(query, function(err, players) {
-        var player = players.docs[0];
-        console.log("id: "+_id+" _rev: "+player._rev);
-         // Update player in the database    
-        var updateplayer = { _id: _id, _rev: player._rev, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, datetime: player.datetime, status: status, dewis: player.dewisid };
-        db.insert(updateplayer).then(console.log);
-      
-        res.redirect("/admin/allplayer");
-      }); 
-    } else res.redirect("/admin/allplayer");
-  });
-  
 
 module.exports = router;

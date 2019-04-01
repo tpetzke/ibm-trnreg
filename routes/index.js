@@ -26,9 +26,9 @@ router.get('/', function(req, res, next) {
   });
 });
 
-/* GET Login Page
-   Read the Tournament data to presented on the homepage from the database */
-   router.get('/login', function(req, res, next) {
+/*GET Login Page
+  Read the Tournament data to presented on the homepage from the database */
+  router.get('/login', function(req, res, next) {
   
     // Set our internal DB variable
     var db = req.db;
@@ -44,9 +44,17 @@ router.get('/', function(req, res, next) {
     db.find(query, function (err, tournament) {
       // 'tournament' contains results
       if (err) console.log(err);
-      res.render('login', { tournament: tournament.docs[0].tournament });
+      res.render('login', { tournament: tournament.docs[0].tournament, message : "Authentifizierung notwendig"});
     });
   });
+
+/*GET Logout
+  Destroy the session and forward to index */
+  router.get('/logout', function(req, res, next) {
+    req.session.destroy();
+    res.redirect('/');  
+  });
+
 
 /* POST Login
    Verify User ID and Password and forward to the admin dash board */
@@ -55,19 +63,23 @@ router.get('/', function(req, res, next) {
     // Set our internal DB variable
     var db = req.db;
   
-    var query = {
-        "selector": {
-            "tournament": {
-                "$gt": ""
-            }
-        }
-    };
-  
-    db.find(query, function (err, tournament) {
-      // 'tournament' contains results
-      if (err) console.log(err);
-      res.render('dashboard', { tournament: tournament.docs[0].tournament });
-    });
+    var query = {"selector": {"tournament": {"$gt": "" } } };
+
+    var userid = req.body.userid;
+    var password = req.body.password;
+
+    if (password == "victoria") {   // FIXME  
+      // sets a cookie with the user's info
+      req.session.user = userid;
+      res.locals.user = userid;
+      req.user = userid;
+      res.redirect("/admin/dashboard")
+    } else {
+      db.find(query, function (err, tournament) {
+        if (err) console.log(err);
+        res.render('login', { tournament: tournament.docs[0].tournament, message: "Ungültige User Id oder Passwort" });
+      });
+    }
   });
 
 

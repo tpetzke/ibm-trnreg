@@ -9,6 +9,7 @@
         <%- include partials/main-mnu.ejs %>
         <h1><%= tournament.name %></h1>
         <h3>Turnierleiter Anmeldung</h3>
+        <p><%=message%></p>
         <form id="formLogin" name="formLogin" method="post" action="/login">
           <div style="float:left;margin-right:20px;">
           <label for="inputUserID">User ID</label>
