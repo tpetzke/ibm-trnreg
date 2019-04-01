@@ -26,6 +26,51 @@ router.get('/', function(req, res, next) {
   });
 });
 
+/* GET Login Page
+   Read the Tournament data to presented on the homepage from the database */
+   router.get('/login', function(req, res, next) {
+  
+    // Set our internal DB variable
+    var db = req.db;
+  
+    var query = {
+        "selector": {
+            "tournament": {
+                "$gt": ""
+            }
+        }
+    };
+  
+    db.find(query, function (err, tournament) {
+      // 'tournament' contains results
+      if (err) console.log(err);
+      res.render('login', { tournament: tournament.docs[0].tournament });
+    });
+  });
+
+/* POST Login
+   Verify User ID and Password and forward to the admin dash board */
+   router.post('/login', function(req, res, next) {
+  
+    // Set our internal DB variable
+    var db = req.db;
+  
+    var query = {
+        "selector": {
+            "tournament": {
+                "$gt": ""
+            }
+        }
+    };
+  
+    db.find(query, function (err, tournament) {
+      // 'tournament' contains results
+      if (err) console.log(err);
+      res.render('dashboard', { tournament: tournament.docs[0].tournament });
+    });
+  });
+
+
 /* GET clublist page.
    Read the Tournament data and the Club List from the View to assemble an overview page of clubs */
    router.get('/clublist', function(req, res, next) {
