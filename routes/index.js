@@ -72,7 +72,6 @@ router.get('/', function(req, res, next) {
       // sets a cookie with the user's info
       req.session.user = userid;
       res.locals.user = userid;
-      req.user = userid;
       res.redirect("/admin/dashboard")
     } else {
       db.find(query, function (err, tournament) {
