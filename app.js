@@ -73,6 +73,9 @@ app.use(session({
     secret: 'tournament-website-geheimnis',
     duration: 30 * 60 * 1000,
     activeDuration: 5 * 60 * 1000,
+    httpOnly: true,
+    secure: true,
+    ephemeral: true
 }));
 
 // Make our db and session user name accessible to our router
