@@ -82,7 +82,7 @@ app.use(session({
 app.use(function (req, res, next) {
     req.db = playerdb;
     req.dewisdb = dewisdb;
-    res.locals.user = req.session.user;
+    res.locals.userid = req.session.userid;
     next();
 });
 

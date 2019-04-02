@@ -297,20 +297,42 @@ p {
   font-size: 12px;
 }
 
-.dashboard-links {
+.dashboard-headings  {
+  width:100%;
   margin-left:15px;
- }
+  height:120px;
+}
 
-.dashboard-links a {
+.dashboard-menu-left  {
+  width:65%;
+  margin-left:20px;
+  padding:15px 0px;
+  float:left;
+}
+
+.dashboard-menu-right  {
+  width:20%;
+  margin-right: 20px;
+  padding:15px 20px;
+  float:right;
+  text-align: right;
+  background-image: url("/images/user.svg");
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position: right center;
+  border-bottom: 1px solid #ccc;
+}
+
+.dashboard-menu-left a {
   font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
-  font-size: 15px;
-  color:#ffffff;
+  font-size: 12px;
+  color:#0074E1;
   text-decoration: none;
-  text-align: center;
-  padding: 10px;
-  padding: 10px 30px;
-  background:#222222;
-  border-radius: 5px;
+  text-align: right;
+  padding: 5px 5px;
+}
+
+.dashboard-menu-left a:hover {
   font-weight: bold;
 }
 

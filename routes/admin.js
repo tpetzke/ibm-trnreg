@@ -4,7 +4,7 @@ var router = express.Router();
 /* Global function that checks for a user in the http request and if not present forwards to the login page 
    this is included in the function call that require a looged in user */ 
 function requireLogin (req, res, next) {
-  if (!req.session.user) {
+  if (!req.session.userid) {
     res.redirect('/login');
   } else {
     next();
@@ -194,11 +194,11 @@ router.get('/player/id/:id', requireLogin, function(req, res, next) {
     we will forward in both cases back to the player listing */
 router.post('/modifyplayer', function(req, res, next) {
 
+  // Set our internal DB variable
+  var db = req.db;
+
   if (req.body.submitted == "save")
   {
-    // Set our internal DB variable
-    var db = req.db;
-
     // Get our form values. These rely on the "name" attributes
     var firstname = req.body.firstname.trim();
     var lastname = req.body.lastname.trim();
@@ -221,6 +221,19 @@ router.post('/modifyplayer', function(req, res, next) {
     
       res.redirect("/admin/allplayer");
     }); 
+  } else if (req.body.submitted == "delete") {
+
+    var _id = req.body._id;
+    var query = {"selector": {"_id": _id}};   // lookup the player in the database
+    db.find(query, function(err, players) {
+      var player = players.docs[0];
+      console.log("Deleting player: "+ player.Lastname +" id: "+_id+" _rev: "+player._rev);
+      db.destroy(player._id, player._rev, function(err, body) {
+        if (err) console.log(err); else console.log(body);
+        res.redirect("/admin/allplayer");
+      });
+    });
+
   } else res.redirect("/admin/allplayer");
 });
 
@@ -243,5 +256,51 @@ router.get('/dashboard', requireLogin, function(req, res, next) {
   });
 });
 
+/* GET Password Page 
+   find the current user in the DB and forward to the set password page */
+router.get('/password', requireLogin, function(req, res, next) {
+
+  // Set our internal DB variable
+  var db = req.db;
+  var userid = req.session.userid;
+
+  var query = {"selector": {"tournament": {"$gt": "" } } };
+
+  db.find(query, function (err, tournament) {
+    if (err) console.log(err);
+    var query = {"selector": { "userid":  userid} };
+    
+    db.find(query, function (err, users) {
+      if (err) console.log(err);
+      if (users.docs.length)
+        res.render('password', { tournament: tournament.docs[0].tournament, userid: userid }); else res.redirect("/admin/dashboard");
+    });
+  });
+});
+
+/* POST Password Page 
+   change the password for the current user */
+   router.post('/password', requireLogin, function(req, res, next) {
+
+    // Set our internal DB variable
+    var db = req.db;
+    var userid = req.session.userid;
+    var pw = req.body.password1;        // FIXME: Hash PW
+
+    var query = {"selector": { "userid":  userid} };
+      
+    db.find(query, function (err, users) {
+      if (err) console.log(err);
+      if (users.docs.length) {
+
+        var u = users.docs[0];
+        var updateuser = { _id: u._id, _rev: u._rev, userid: u.userid, password: pw, level: u.level };
+        db.insert(updateuser).then(console.log);
+    
+        res.redirect("/admin/dashboard");
+      }
+    });
+  });
+  
 
 module.exports = router;

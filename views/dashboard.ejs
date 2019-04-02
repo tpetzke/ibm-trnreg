@@ -7,12 +7,15 @@
   <body>
       <div id="container">
         <%- include partials/main-mnu.ejs %>
-        <p>Angemeldet als: <%=user%></p>
-        <h1>Turnierleiter Dashboard</h1>
-        <h3><%= tournament.name %></h3>
-        <div class="dashboard-links">
-        <a href="/admin/setup">Turnier Setup</a>
-        <a href="/admin/allplayer">Spieler Liste</a>
+        <div class="dashboard-menu-left">
+            <a href="/admin/setup">Turnier Setup</a>
+            <a href="/admin/allplayer">Spieler Liste</a>
+            <a href="/admin/password">Passwort ändern</a> 
+        </div>
+        <div class="dashboard-menu-right"><%=userid%>&nbsp;&nbsp;</div>   
+        <div class="dashboard-headings">
+          <h1>Turnierleiter Dashboard</h1>
+          <h3><%= tournament.name %></h3>
         </div>
         <%
             var males = 0, females = 0, waitlisted = 0;

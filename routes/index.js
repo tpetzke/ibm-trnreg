@@ -63,24 +63,28 @@ router.get('/', function(req, res, next) {
     // Set our internal DB variable
     var db = req.db;
   
-    var query = {"selector": {"tournament": {"$gt": "" } } };
+    var userid = req.body.userid.trim();
+    var password = req.body.password.trim();
 
-    var userid = req.body.userid;
-    var password = req.body.password;
+    var query = {"selector": { "userid":  userid} };
+    db.find(query, function(err, users) {
+      if (err) console.log(err);
+      console.log(users.length);
+      if (users.docs.length && password==users.docs[0].password) {   // FIXME: Compare with password hash
 
-    if (password == "victoria") {   // FIXME  
-      // sets a cookie with the user's info
-      req.session.user = userid;
-      res.locals.user = userid;
-      res.redirect("/admin/dashboard")
-    } else {
-      db.find(query, function (err, tournament) {
-        if (err) console.log(err);
-        res.render('login', { tournament: tournament.docs[0].tournament, message: "Ungültige User Id oder Passwort" });
-      });
-    }
+        // sets a cookie with the user's info
+          req.session.userid = userid;
+          res.locals.userid = userid;
+          res.redirect("/admin/dashboard");   
+      } else {
+        var query = {"selector": {"tournament": {"$gt": "" } } };
+        db.find(query, function (err, tournament) {
+          if (err) console.log(err);
+          res.render('login', { tournament: tournament.docs[0].tournament, message: "Ungültige User Id oder Passwort" });
+        });
+      }
+    });
   });
-
 
 /* GET clublist page.
    Read the Tournament data and the Club List from the View to assemble an overview page of clubs */
