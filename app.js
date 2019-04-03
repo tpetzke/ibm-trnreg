@@ -83,6 +83,7 @@ app.use(function (req, res, next) {
     req.db = playerdb;
     req.dewisdb = dewisdb;
     res.locals.userid = req.session.userid;
+    res.locals.level = req.session.level;
     next();
 });
 

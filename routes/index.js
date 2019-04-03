@@ -75,6 +75,9 @@ router.get('/', function(req, res, next) {
         // sets a cookie with the user's info
           req.session.userid = userid;
           res.locals.userid = userid;
+          req.session.level = users.docs[0].level;
+          res.locals.level = users.docs[0].level;
+          
           res.redirect("/admin/dashboard");   
       } else {
         var query = {"selector": {"tournament": {"$gt": "" } } };

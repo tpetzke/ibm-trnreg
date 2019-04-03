@@ -301,6 +301,122 @@ router.get('/password', requireLogin, function(req, res, next) {
       }
     });
   });
+
+  /* GET userlist Page 
+   This page lists the currently defined users and webmasters */
+router.get('/userlist', requireLogin, function(req, res, next) {
+
+  // Set our internal DB variable
+  var db = req.db;
+
+  var query = {"selector": {"tournament": {"$gt": "" } } };
+
+  db.find(query, function (err, tournament) {
+    if (err) console.log(err);
   
+    var query = {"selector": { "userid": {"$gt": ""} } };
+    db.find(query, function(err, users) {
+      if (err) console.log(err);
+      res.render('userlist', { tournament: tournament.docs[0].tournament, users: users.docs, message: "Aktuell zugelassende Portal Nutzer" });
+    });
+  });
+});    
+
+
+  /* GET Webmaster Page 
+   The page can be used to create a new or to change an existing webmaster 
+   if userid is 0 then a new webmaster is created otherwise the existing one with that id modified */
+router.get('/webmaster/id/:_id/:action', requireLogin, function(req, res, next) {
+
+  // Set our internal DB variable
+  var db = req.db;
+  var _id = req.params._id;
+  var action = req.params.action;
+
+   var query = {"selector": {"tournament": {"$gt": "" } } };
+
+  db.find(query, function (err, tournament) {
+    if (err) console.log(err);
+  
+    if (action == "new")  // create a new webmaster
+    {
+      var title = "Weiteren Turnierleiter Account anlegen";
+      res.render('webmaster', { tournament: tournament.docs[0].tournament, title: title, _id: "", userid: "", level: "root" });
+    
+    
+    } else if (action == "edit") {
+      var title = "Turnierleiter Account aktualisieren";
+      var query = {"selector": { "_id":  _id} };
+      db.find(query, function(err, users) {
+        if (err) console.log(err);
+        if (users.docs.length) {   
+          res.render('webmaster', { tournament: tournament.docs[0].tournament, title: title, _id: _id, userid: users.docs[0].userid, level: users.docs[0].level });
+        } else res.redirect("/admin/dashboard");
+      });  
+    
+    
+    } else if (action == "delete") {
+      var query = {"selector": { "_id":  _id} };
+      db.find(query, function(err, users) {
+        if (err) console.log(err);
+        if (users.docs.length) {
+          db.destroy(users.docs[0]._id, users.docs[0]._rev, function(err, body) {
+            if (err) console.log(err); else console.log(body);       
+            res.redirect('/admin/userlist');  
+          });
+        } else res.redirect('/admin/userlist');
+      });  
+    } else res.redirect('/admin/userlist');
+  });
+});
+  
+/* POST Webmaster Page 
+   If we get an empty _id value we insert a new webmaster otherwise we look for the one with the _id and update it */
+router.post('/webmaster', requireLogin, function(req, res, next) {
+
+  // Set our internal DB variable
+  var db = req.db;
+  
+  var _id = req.body._id;
+  var userid = req.body.userid.trim();
+  var password = req.body.password1.trim();  // FIXME Hash Password
+  var level = req.body.level;
+  var message = "";  
+
+  var query = {"selector": { "userid":  userid} };
+  
+  if (res.locals.level == "root") {         // check whether the user level is high enough to modify user data
+
+    db.find(query, function(err, users) {
+      var usercnt = users.docs.length;      // check how many users with that userid exist already
+
+      if (_id == "")
+      {
+          if (usercnt == 0)
+          {
+            var webmaster = { userid: userid, password: password, level: level };
+            db.insert(webmaster).then(res.redirect("/admin/userlist"));
+            message = "Neuen Nutzer mit User Id: "+userid+" angelegt";
+          } else message="Fehler! Userid "+userid+" already exists";
+          console.log(message);
+      } else {
+
+        var query = {"selector": { "_id":  _id} };
+        db.find(query, function(err, users) {
+          if (err) console.log(err);
+          if (users.docs.length) {
+            if (userid == users.docs[0].userid || !usercnt)
+            {  
+              var webmaster = { _id: users.docs[0]._id, _rev: users.docs[0]._rev, userid: userid, password: password, level: level };
+              db.insert(webmaster).then(res.redirect("/admin/userlist"));
+              message = "Nutzer Daten für "+userid+" aktualisiert";
+            } else message="Fehler! Userid "+userid+" already exists";
+          }
+          console.log(message);
+        });  
+      }
+    }); 
+  } else console.log("Berechtigungsfehler!");
+});
 
 module.exports = router;
