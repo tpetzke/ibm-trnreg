@@ -6,14 +6,23 @@
   </head>
   <body>
       <div id="container">
-        <%- include partials/main-mnu.ejs %>
+        <img src="/images/chess-banner-thin.jpg" alt="" width="940" height="140">
         <div class="dashboard-menu-left">
             <a href="/admin/setup">Turnier Setup</a>
             <a href="/admin/allplayer">Spieler Liste</a>
             <a href="/admin/userlist">Nutzer-Verwaltung</a>
-            <a href="/admin/password">Passwort ändern</a> 
         </div>
-        <div class="dashboard-menu-right"><%=userid%>&nbsp;&nbsp;</div>   
+        
+        <div class="dashboard-menu-right">
+            <div class="dropdown">
+                <button class="dropbtn"><%=userid%>&nbsp;&nbsp;</button>
+                <div class="dropdown-content">
+                  <a href="/admin/password">Passwort ändern</a>
+                  <a href="/logout">Logout</a>
+                </div>
+            </div> 
+        </div>
+
         <div class="dashboard-headings">
           <h1>Turnierleiter Dashboard</h1>
           <h3><%= tournament.name %></h3>
