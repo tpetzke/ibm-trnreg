@@ -123,6 +123,10 @@ label {
   padding: 6px;
 }
 
+#players td a, a:visited {
+  color:#09139b;
+}
+
 #players tr:nth-child(even){background-color: #f2f2f2;}
 
 #players tr:hover {background-color: #ddd;}
@@ -166,6 +170,57 @@ table.sortable thead {
   background-color:#F79E02;
   color: white;
 }
+/* Dash Board Table Start */
+
+table.dashboard {
+  text-align: left;
+  line-height: 30px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #0074E1;
+  width: 90%;
+  margin: 25px auto;
+  border-radius: .25rem;
+}
+
+table.dashboard thead tr:first-child {
+  background: #0074E1;
+  color: #fff;
+  border: none;
+}
+
+table.dashboard th:first-child,
+td:first-child {
+  padding: 0 15px 0 20px;
+}
+
+table.dashboard th {
+  font-weight: 500;
+}
+
+table.dashboard thead tr:last-child th {
+  border-bottom: 3px solid #ddd;
+}
+
+table.dashboard tbody tr:hover {
+  background-color: #f2f2f2;
+  cursor: default;
+}
+
+table.dashboard tbody tr:last-child td {
+  border: none;
+}
+
+table.dashboard tbody td {
+  border-bottom: 1px solid #ddd;
+}
+
+table.dashboard td:last-child {
+  text-align: right;
+  padding-right: 10px;
+}
+
+/* Dash Board Table End */
 
 body {
     background:#dfe8ec url(/images/page_bg.png) repeat-x 0 0;
@@ -194,6 +249,12 @@ h2 {
 h3 {
   font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
   font-size: 18px;
+  margin: 15px;
+}
+
+h4 {
+  font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
   margin: 15px;
 }
 
@@ -376,6 +437,25 @@ p {
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {display: block;}
+
+/* Bar Chart on the dashboard page */
+.chart {
+  width:160px;
+  height:240px;
+  border-radius:4px;
+  box-shadow: 2px 2px 4px 0 rgba(0,0,0,0.15);
+  margin-top:20px;
+  margin-left:20px;
+  float:left;
+}
+
+.chart.wide2 {
+  width: 340px;
+}
+
+.chart.wide3 {
+  width: 520px;
+}
 
 /* the footer */
 #footer_bar

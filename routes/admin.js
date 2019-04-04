@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+const TrnInfo = require('../classes/trninfo');
+
+
 /* Global function that checks for a user in the http request and if not present forwards to the login page 
    this is included in the function call that require a looged in user */ 
 function requireLogin (req, res, next) {
@@ -251,7 +254,10 @@ router.get('/dashboard', requireLogin, function(req, res, next) {
     
     db.find(query, function (err, players) {
       if (err) console.log(err);
-      res.render('dashboard', { tournament: tournament.docs[0].tournament, players: players.docs });
+
+      const trnInfo = new TrnInfo(tournament.docs[0].tournament, players.docs);
+      
+      res.render('dashboard', { trnInfo: trnInfo });
     });
   });
 });
