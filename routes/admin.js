@@ -249,6 +249,7 @@ router.post('/modifyplayer', function(req, res, next) {
     // Get our form values. These rely on the "name" attributes
     var firstname = req.body.firstname.trim();
     var lastname = req.body.lastname.trim();
+    var title = req.body.title.trim();
     var dwz = req.body.dwz;
     var elo = req.body.elo;
     var email = req.body.email;
@@ -256,6 +257,8 @@ router.post('/modifyplayer', function(req, res, next) {
     var sex = req.body.sex;
     var club = req.body.club.trim();
     var status = req.body.status;
+    var paymentstatus = req.body.paymentstatus;
+    var yob = req.body.yob;
     var _id = req.body._id;
 
     var query = {"selector": {"_id": _id}};   // lookup the player in the database
@@ -263,7 +266,7 @@ router.post('/modifyplayer', function(req, res, next) {
       var player = players.docs[0];
       console.log("id: "+_id+" _rev: "+player._rev);
         // Update player in the database    
-      var updateplayer = { _id: _id, _rev: player._rev, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, datetime: player.datetime, status: status, dewis: player.dewisid };
+      var updateplayer = { _id: _id, _rev: player._rev, Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: player.datetime, status: status, paymentstatus: paymentstatus, dewis: player.dewisid };
       db.insert(updateplayer).then(console.log);
     
       res.redirect("/admin/allplayer");

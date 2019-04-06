@@ -26,6 +26,9 @@
           var tm = new Date();
           tm.setTime(players.docs[i].datetime);
           var ts = tm.toString().slice(4,15); 
+          var paymentStatusTitle = "Bezahlt";
+          if (players.docs[i].paymentstatus == "open") paymentStatusTitle = "Offen";
+          if (players.docs[i].paymentstatus == "free") paymentStatusTitle = "Frei";
         %>
         <tr>
            <td style="text-align:center"><%=i+1%></td>
@@ -35,7 +38,11 @@
            <td style="text-align:center"><%=players.docs[i].DWZ %></td>
            <td><%=players.docs[i].Club %></td>
            <td style="text-align:center"><%=players.docs[i].Group %></td>
-           <td style="text-align:center"><img src="/images/<%=players.docs[i].status%>-icon.png" alt="st" width="16" height="16"></td>
+           <td style="text-align:center"><img src="/images/<%=players.docs[i].status%>-icon.png" alt="st" width="16" height="16">
+                                         <% if (players.docs[i].status == "confirmed") { %>
+                                         <img src="/images/<%=players.docs[i].paymentstatus%>20.png" title="<%=paymentStatusTitle%>" alt="ps" width="20" height="20">
+                                         <% } %>
+          </td>
            <td><%=ts%></td>
            <td><%=players.docs[i].email %></td>
         </tr> 

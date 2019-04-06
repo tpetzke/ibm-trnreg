@@ -102,19 +102,24 @@ router.post('/addplayer', function (req, res) {
     var group_desc = group;
     if (sex=="female") group_desc += " (weiblich)";
 
-    db.view('app', 'player-count', function(err, player) {
-      if (err) console.log(err);
+    var query = {"selector": {"tournament": {"$gt": "" } } };
 
-      // determine the status for the player. If less than tournament capacity players are registered the status is confirmed otherwise waitlisted
-      var currentPlayerCnt = player.rows.length?player.rows[0].value:0;
-      if (capacity > 0 && currentPlayerCnt >= capacity) status="waitlisted";
+    db.find(query, function (err, tournament) {
 
-      // Insert player to the database    
-      var newplayer = { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, status: status, paymentstatus: paymentstatus, dewis: dewisid };
-      db.insert(newplayer).then(console.log);
+      db.view('app', 'player-count', function(err, player) {
+        if (err) console.log(err);
 
-      // And forward to success page
-      res.render("success", { Name: firstname + ' ' + lastname, Group: group_desc, status: status, capacity: capacity, playercnt : currentPlayerCnt});
+        // determine the status for the player. If less than tournament capacity players are registered the status is confirmed otherwise waitlisted
+        var currentPlayerCnt = player.rows.length?player.rows[0].value:0;
+        if (capacity > 0 && currentPlayerCnt >= capacity) status="waitlisted";
+
+        // Insert player to the database    
+        var newplayer = { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, status: status, paymentstatus: paymentstatus, dewis: dewisid };
+        db.insert(newplayer).then(console.log);
+
+        // And forward to success page
+        res.render("success", { Name: firstname + ' ' + lastname, Group: group_desc, status: status, capacity: capacity, playercnt : currentPlayerCnt, tournament: tournament.docs[0].tournament});
+      });
     });
   
   } else res.redirect("/");

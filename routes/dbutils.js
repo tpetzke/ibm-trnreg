@@ -1,4 +1,4 @@
-exports.dbInit = function(db, createInitialContent, callback) { 
+exports.dbInit = function(db, default_docs, callback) { 
     console.log("Initializing database: " + db.config.db);
 
     // Insert the views for player and club counting
@@ -94,9 +94,11 @@ exports.dbInit = function(db, createInitialContent, callback) {
     docs.push(dbview);
     docs.push(qidx);
     docs.push(qidx2);
-    if (createInitialContent) {
+    if (default_docs == null) {
         docs.push(tournament_doc);
         docs.push(root_doc);
+    } else {
+        for (i=0; i<default_docs.length; i++) docs.push(default_docs[i]);
     }
 
     db.bulk({ docs:docs }, function(err) {
@@ -104,31 +106,4 @@ exports.dbInit = function(db, createInitialContent, callback) {
         callback();
     }); 
 
-    /*
-    db.insert(dbview, function (err, result) {
-      if (err) { throw err; }
-      console.log('Index for Player and Club Counting created');
-
-      db.insert(qidx, function (err, result) {
-        if (err) { throw err; }
-        console.log('Index for Status and Datetime Queries created');
-
-        db.insert(qidx2, function (err, result) {
-            if (err) { throw err; }
-            console.log('Index for Datetime Queries created');
-
-            if (createInitialContent) {
-                db.insert(tournament_doc, function (err, result) {
-                    console.log("Default Tournament Document created");
-        
-                    db.insert(root_doc,  function (err, result) {
-                        console.log("Default Administrator <root:root> created! Please change userid and password");
-                        callback();
-                    });   
-                });
-            } else callback();
-        });
-      });
-    });
-    */
 }

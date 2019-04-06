@@ -36,7 +36,7 @@ if (cloudant) {
             
             var dbutils = require('./routes/dbutils');
             playerdb = cloudant.db.use(dbPlayersName);
-            dbutils.dbInit(playerdb, true, function() {
+            dbutils.dbInit(playerdb, null, function() {
                 console.log("DB initialised...");
             });
         }
