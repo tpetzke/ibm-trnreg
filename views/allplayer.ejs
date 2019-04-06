@@ -25,18 +25,18 @@
           var a = ""; if (players.docs[i].Sex=="female") a="w";   
           var tm = new Date();
           tm.setTime(players.docs[i].datetime);
-          var ts = tm.toString().slice(4,21); 
+          var ts = tm.toString().slice(4,15); 
         %>
         <tr>
            <td style="text-align:center"><%=i+1%></td>
-           <td><a href="/admin/player/id/<%=players.docs[i]._id%>"><%=players.docs[i].Lastname+", "+players.docs[i].Firstname %></a></td>
+           <td><a href="/admin/player/id/<%=players.docs[i]._id%>"><%=(players.docs[i].Title!==""?players.docs[i].Title+" ":"")+players.docs[i].Firstname + " " + players.docs[i].Lastname %></a></td>
            <td style="text-align:center"><%=a%></td>
            <td style="text-align:center"><%=players.docs[i].ELO %></td>
            <td style="text-align:center"><%=players.docs[i].DWZ %></td>
            <td><%=players.docs[i].Club %></td>
            <td style="text-align:center"><%=players.docs[i].Group %></td>
            <td style="text-align:center"><img src="/images/<%=players.docs[i].status%>-icon.png" alt="st" width="16" height="16"></td>
-           <td><%=ts %></td>
+           <td><%=ts%></td>
            <td><%=players.docs[i].email %></td>
         </tr> 
         <% } %>   

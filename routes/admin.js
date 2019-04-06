@@ -29,9 +29,9 @@ function requireLogin (req, res, next) {
         }
     };
   
-    db.find(query, function (err, data) {
+    db.find(query, function (err, tournament) {
         // 'data' contains results
-        res.render('setup', { data: data });
+        res.render('setup', { tournament: tournament.docs[0].tournament, _id: tournament.docs[0]._id, _rev: tournament.docs[0]._rev  });
     });
     
   });
@@ -53,6 +53,10 @@ router.post('/setup', function (req, res) {
   var description = req.body.description;
   var announcement= req.body.announcement;
   var groups = req.body.groups.split(",");
+  var entryfee = req.body.entryfee;
+  var paymentdeadline = req.body.paymentdeadline;
+  var recipient = req.body.recipient.trim();
+  var IBAN = req.body.IBAN;
 
   for (i=0; i<groups.length; i++) groups[i] = groups[i].trim();
 
@@ -69,20 +73,60 @@ router.post('/setup', function (req, res) {
     url: announcement,
     description : description,
     capacity : capacity,
-    groups: groups
+    groups: groups,
+    entryfee: entryfee,
+    paymentdeadline: paymentdeadline,
+    recipient: recipient,
+    IBAN: IBAN
   }} 
   
   if (action=="update")
   {
-    db.insert(tournament_doc).then(console.log);
+    db.insert(tournament_doc).then(res.redirect("/admin/dashboard"));
+  }  
+
+  if (action=="back")
+  {
+    res.redirect("/admin/dashboard");
   }  
 
   if (action=="init")
   {
-    console.log("Init Request received")
+    var dbname = db.config.db;
+    console.log("Init Request received for database: " + dbname);
+
+    // collect the user list as we will transfer it into the new database
+    var query = {"selector": { "userid": {"$gt": ""} } };
+    db.find(query, function(err, users) {
+      if (err) console.log(err);
+
+      var docs = [];
+      for (i=0; i<users.docs.length; i++) docs.push({userid:users.docs[i].userid, password:users.docs[i].password,level:users.docs[i].level});
+      docs.push(tournament_doc);
+
+      cloudant.db.destroy(dbname, function (err, data) {
+        console.log("Delete database "+dbname+" status: "+data);
+        console.log(err);
+
+        cloudant.db.create(dbname, function (err, data) {
+          if (!err) { //err if database doesn't already exists
+              console.log("Created database: " + dbname);
+              
+              var dbutils = require('./dbutils');
+              db = cloudant.db.use(dbname);
+              req.db = db;
+              dbutils.dbInit(db, docs, function() {
+                db.bulk({ docs:docs }, function(err) { 
+                  if (err) { throw err; }
+                  console.log("all inserted. Forwarding ...")
+                  res.redirect("/admin/dashboard");
+                });
+              });
+          } else res.redirect("/admin/dashboard");
+        });
+      });
+    });
   }
-  
-  res.redirect("/admin/dashboard");
 });
 
 /* Post to the refresh playerlist
@@ -159,7 +203,7 @@ router.post('/refreshplayerlist', function(req, res, next) {
 
     var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": ["status","datetime"]};  
     db.find(query, function (err, players) {
-
+      if (err) console.log(err);
       res.render('allplayer', { tournament: tournament.docs[0].tournament, players: players });
     });
   });

@@ -62,13 +62,15 @@ router.post('/verifyplayer', function (req, res) {
   var dewisid = req.body.dewisid;
   var datetime = Date.now();
   var capacity = req.body.capacity;
-
+  var title = req.body.title.trim().toUpperCase();
+  var yob = req.body.YOB;
+ 
   firstname = firstname.charAt(0).toUpperCase() + firstname.slice(1);
   lastname = lastname.charAt(0).toUpperCase() + lastname.slice(1);
   club = club.charAt(0).toUpperCase() + club.slice(1);
 
   // And forward to verify page
-  res.render("addplayer3", { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, dewisid: dewisid, capacity : capacity });
+  res.render("addplayer3", { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, dewisid: dewisid, capacity : capacity });
 });
 
 
@@ -81,10 +83,12 @@ router.post('/addplayer', function (req, res) {
     var db = req.db;
 
     // Get our form values. These rely on the "name" attributes
+    var title = req.body.title;
     var firstname = req.body.firstname.trim();
     var lastname = req.body.lastname.trim();
     var dwz = req.body.dwz;
     var elo = req.body.elo;
+    var yob = req.body.yob;
     var email = req.body.email;
     var group = req.body.group;
     var sex = req.body.sex;
@@ -93,18 +97,20 @@ router.post('/addplayer', function (req, res) {
     var datetime = req.body.datetime;
     var capacity = req.body.capacity;
     var status = "confirmed";         // init to default, will be checked below again 
+    var paymentstatus = "open";
 
     var group_desc = group;
     if (sex=="female") group_desc += " (weiblich)";
 
     db.view('app', 'player-count', function(err, player) {
+      if (err) console.log(err);
 
       // determine the status for the player. If less than tournament capacity players are registered the status is confirmed otherwise waitlisted
-      var currentPlayerCnt = player.rows[0].value;
+      var currentPlayerCnt = player.rows.length?player.rows[0].value:0;
       if (capacity > 0 && currentPlayerCnt >= capacity) status="waitlisted";
 
       // Insert player to the database    
-      var newplayer = { Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, status: status, dewis: dewisid };
+      var newplayer = { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, status: status, paymentstatus: paymentstatus, dewis: dewisid };
       db.insert(newplayer).then(console.log);
 
       // And forward to success page

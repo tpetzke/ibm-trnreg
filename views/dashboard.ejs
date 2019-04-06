@@ -161,7 +161,10 @@
         <div class="chart wide3">
             <canvas id="bar-chart-2" width="470" height="200"></canvas>
             <script>
-        
+            <% var label_size = 99; 
+               if (trnInfo.getGroupNames().length > 2) label_size = 15;
+               if (trnInfo.getGroupNames().length > 3) label_size = 10;
+            %>
             // Bar chart
             c = new Chart(document.getElementById("bar-chart-2"), {
                 type: 'bar',
@@ -185,8 +188,8 @@
                         xAxes: [{
                             ticks: {
                                 callback: function(value) {
-                                    if (value.length > 10) {
-                                        return value.substr(0, 10) + '...'; //truncate
+                                    if (value.length > <%=label_size%>) {
+                                        return value.substr(0, <%=label_size%>) + '...'; //truncate
                                     } else {
                                         return value
                                     }

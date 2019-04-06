@@ -1,6 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
-var cfenv = require("cfenv");
+var cfenv = require('cfenv');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -31,8 +31,15 @@ if (cloudant) {
 
     // Create a new "players" database.
     cloudant.db.create(dbPlayersName, function (err, data) {
-        if (!err) //err if database doesn't already exists
+        if (!err) { //err if database doesn't already exists
             console.log("Created database: " + dbPlayersName);
+            
+            var dbutils = require('./routes/dbutils');
+            playerdb = cloudant.db.use(dbPlayersName);
+            dbutils.dbInit(playerdb, true, function() {
+                console.log("DB initialised...");
+            });
+        }
     });
 
     // Specify the database we are going to use (playerdb)...
@@ -46,8 +53,9 @@ if (cloudant) {
             console.log("Created database: " + dbDewisName);
     });
 
-    // Specify the database we are going to use (playerdb)...
+    // Specify the database we are going to use (dewisdb)...
     dewisdb = cloudant.db.use(dbDewisName);
+
 }
 
 var indexRouter = require('./routes/index');

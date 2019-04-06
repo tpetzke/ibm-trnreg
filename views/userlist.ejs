@@ -30,9 +30,11 @@
                 <% } %>     
             </table>
         </div>
+        <br>
         <div id="index_button_container">
         <form method="GET" action="/admin/webmaster/id/0/new">
           <input type="<%=(level=="root")?"submit":"hidden"%>" class="blue-button" value="Neuen Nutzer anlegen" />
+          <a href='/admin/dashboard' class="blue-button">Zurück zum Dashboard</a>
         </form>
         </div>
         <%- include partials/footer.ejs %>

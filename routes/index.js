@@ -21,7 +21,9 @@ router.get('/', function(req, res, next) {
 
       db.view('app', 'player-count', function(err, player) {
         if (err) console.log(err);
-        res.render('index', { tournament: tournament.docs[0].tournament, playercnt: player.rows[0].value });
+        var playercnt = 0;
+        if (player.rows.length) playercnt = player.rows[0].value;
+        res.render('index', { tournament: tournament.docs[0].tournament, playercnt: playercnt });
       });
   });
 });
