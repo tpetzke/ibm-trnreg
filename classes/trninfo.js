@@ -80,7 +80,7 @@ module.exports = internal.TrnInfo = class {
 
     getPlayerNameByIdx(idx)
     {
-        if (idx < this.players.length) return this.players[i].Firstname + " " + this.players[i].Lastname;
+        if (idx < this.players.length) return (this.players[i].Title != "" ? this.players[i].Title + " " : "") + this.players[i].Firstname + " " + this.players[i].Lastname;
         return "";
     }
 
