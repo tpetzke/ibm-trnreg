@@ -179,7 +179,7 @@ module.exports = internal.TrnInfo = class {
             if (this.players[i].Sex == "male") dwzs[1] += dwz; else dwzs[2] += dwz;
             dwzs[0] += dwz;
         }
-        for (i=0; i<3; i++) dwzs[i] = cnts[i] > 0 ? Math.round(dwzs[i] / cnts[i]) : 0;
+        for (i=0; i<3; i++) dwzs[i] = cnts[i] > 0 ? Number.parseFloat(dwzs[i] / cnts[i]).toFixed(1) : 0;
 
         return dwzs;
     } 
