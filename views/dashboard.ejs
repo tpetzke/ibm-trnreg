@@ -47,32 +47,97 @@
                     <div class="title">auf Warteliste</div>
                 </div>
             </div>
-            <div class="tile wide green">
+            <div class="tile green">
                 <div class="header">
-                <div class="left">
-                    <div class="count"><%=trnInfo.getSex("male")%></div>
-                    <div class="title">männliche</div>
-                </div>
-                <div class="right">
-                    <div class="count"><%=trnInfo.getSex("female")%></div>
-                    <div class="title">weibliche</div>
-                </div>
+                    <div class="count"><%=trnInfo.getTournamentBudget()%></div>
+                    <div class="title">Euro</div>
                 </div>
                 <div class="body">
-                    <div class="title">Spieler angemeldet</div>
+                    <div class="title">Turnierbudget</div>
                 </div>
             </div>
-            <div class="tile blue">
+            <div class="tile green">
                 <div class="header">
-                    <div class="count"><%=trnInfo.getClubCnt()%></div>
-                    <div class="title">Vereine</div>
+                    <div class="count"><%=trnInfo.getTournamentIncome()%></div>
+                    <div class="title">Euro</div>
                 </div>
                 <div class="body">
-                    <div class="title">nehmen teil</div>
+                    <div class="title">Einnahmen</div>
+                </div>
+            </div>
+            
+            <div class="tile orange">
+                <div class="header">
+                    <div class="count"><%=trnInfo.getTournamentOverdueCnt()%></div>
+                    <div class="title">Einzahlungen</div>
+                </div>
+                <div class="body">
+                    <div class="title">überfällig</div>
                 </div>
             </div>
         </div>
         <br style="clear:both">
+
+        <div class="chart wide2">
+            <table class="dashboard">
+                <thead>
+                    <th>Spieler Details</th>
+                    <th>Wert</th>
+                </thead>
+                <tbody>
+                    <tr><td>Männer</td><td><%=trnInfo.getSex("male")%></td></tr>
+                    <tr><td>Männer DWZ &Oslash;</td><td><%=trnInfo.getAverageDWZfor("male")%></td></tr>
+                    <tr><td>Frauen</td><td><%=trnInfo.getSex("female")%></td></tr>
+                    <tr><td>Frauen DWZ &Oslash;</td><td><%=trnInfo.getAverageDWZfor("female")%></td></tr>
+                    <tr><td>Turnier DWZ &Oslash;</td><td><%=trnInfo.getAverageDWZfor("tournament")%></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="chart wide3">
+        <canvas id="bar-chart-curve" width="470" height="200"></canvas>
+        <script>
+
+        var canvas = document.getElementById('bar-chart-curve');
+        var data = {
+                labels: ["<700", "900", "1100", "1300", "1500", "1700", "1900", "2100", "2300", ">2300"],
+                datasets: [{
+                    data: <%-JSON.stringify(trnInfo.getPlayersperDWZBand())%>,
+                    backgroundColor: ["#5899DA", "#5899DA", "#5899DA", "#5899DA", "#5899DA", "#5899DA", "#5899DA", "#5899DA", "#5899DA", "#5899DA"]
+                }]
+            };
+        var option = {
+        tooltips: { enabled: true },
+            legend: { display: false },
+            title: {
+                        display: true,
+                        text: 'Spieler pro DWZ Band'
+                    },
+            scales: {
+            yAxes:[{
+                    display:true
+            }],
+            xAxes:[{
+                barPercentage: 1.0,
+                categoryPercentage: 1.0,
+                    gridLines: {
+                    display:false
+                },
+                scaleLabel: {
+                display: false,
+                labelString: 'DWZ'
+            }
+            }]
+        }
+        };
+
+        var myBarChart = Chart.Bar(canvas,{
+	    data:data,
+        options:option
+        });
+        </script>
+        </div>
+
         <div class="chart wide2">
             <table class="dashboard">
                 <thead>

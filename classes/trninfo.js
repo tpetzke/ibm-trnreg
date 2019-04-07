@@ -17,7 +17,8 @@ module.exports = internal.TrnInfo = class {
           });
 
         this._playersPerGroup = this.collectPlayersPerGroup();
-        this._clubs = this.collectClubCounts(); 
+        this._clubs = this.collectClubCounts();
+        this._avgdwz = this.collectAvgDWZ();
     }
 
     getTournamentName() {
@@ -102,6 +103,43 @@ module.exports = internal.TrnInfo = class {
         return "";
     }
 
+    // get the budget in € if all confirmed players less the free players pay their entry fee
+    getTournamentBudget() {
+        var cnt = 0, i;
+        for (i = 0; i < this.players.length; i++) 
+            if (this.players[i].status == "confirmed" && this.players[i].paymentstatus != "free") cnt++;
+        
+        return cnt * this.tournament.entryfee;    
+    }
+
+    // get the already received payments 
+    getTournamentIncome() {
+        var cnt = 0, i;
+        for (i = 0; i < this.players.length; i++) 
+            if (this.players[i].paymentstatus == "paid") cnt++;
+        
+        return cnt * this.tournament.entryfee;    
+    }
+
+    // get number of overedue payments 
+    getTournamentOverdueCnt() {
+        var cnt = 0, i; 
+        var d = Date.now();
+        if (this.tournament.paymentdeadline != "0") {
+            for (i = 0; i < this.players.length; i++) {
+                if (this.players[i].paymentstatus == "open" && d > (parseInt(this.players[i].datetime) + (24*60*60*1000 * parseInt(this.tournament.paymentdeadline)))) cnt++;
+            }
+        }
+        return cnt;    
+    }
+
+    getAverageDWZfor(who) {
+        if (who == "male") return this._avgdwz[1]; else
+        if (who == "female") return this._avgdwz[2]; else
+        if (who == "tournament") return this._avgdwz[0];
+        return 0;
+    }
+
     collectPlayersPerGroup() {
         var i = 0, j = 0, pPG = [];
         for (i = 0; i < this.tournament.groups.length; i++) pPG.push(0);
@@ -130,6 +168,33 @@ module.exports = internal.TrnInfo = class {
         return clubs;
     }
 
+    // 0: Tournament DWZ, 1: Males, 2: Females
+    collectAvgDWZ() {
+        var dwzs = [0, 0, 0], cnts = [0, 0, 0], i, dwz;
+        cnts[0] = this.players.length;
+        
+        for (i = 0; i < this.players.length; i++) if (this.players[i].status == "confirmed") {
+            if (this.players[i].Sex == "male") cnts[1]++; else cnts[2]++
+            dwz = (typeof this.players[i].DWZ !== "undefined") ? parseInt(this.players[i].DWZ) : 700;
+            if (this.players[i].Sex == "male") dwzs[1] += dwz; else dwzs[2] += dwz;
+            dwzs[0] += dwz;
+        }
+        for (i=0; i<3; i++) dwzs[i] = cnts[i] > 0 ? Math.round(dwzs[i] / cnts[i]) : 0;
+
+        return dwzs;
+    } 
+ 
+    getPlayersperDWZBand() {
+        var bands = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];  // <700, 900, 1100, 1300, 1500, 1700, 1900, 2100, 2300, >2300;
+        var i, dwz;
+        for (i = 0; i < this.players.length; i++) if (this.players[i].status == "confirmed") { 
+            dwz = this.players[i].DWZ;
+            if (dwz < 700) bands[0]++; else
+            if (dwz >= 2300) bands[9]++; else
+            bands[Math.trunc((dwz-700)/200)+1]++;
+        }
+        return bands;
+    } 
 
 }
 
