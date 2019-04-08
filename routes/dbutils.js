@@ -109,5 +109,5 @@ exports.dbInit = function(db, default_docs, callback) {
         if (err) console.log(err); else console.log("Initial DB content created");
         callback();
     }); 
-
+a
 }
