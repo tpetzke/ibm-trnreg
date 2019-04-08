@@ -28,6 +28,28 @@ router.get('/', function(req, res, next) {
   });
 });
 
+/* GET Imprint page */
+router.get('/imprint', function(req, res, next) {
+  
+  // Set our internal DB variable
+  var db = req.db;
+
+  var query = {
+      "selector": {
+          "tournament": {
+              "$gt": ""
+          }
+      }
+  };
+
+
+  db.find(query, function (err, tournament) {
+      // 'tournament' contains results
+      res.render('imprint', { tournament: tournament.docs[0].tournament });
+  });
+});
+
+
 /*GET Login Page
   Read the Tournament data to presented on the homepage from the database */
   router.get('/login', function(req, res, next) {
