@@ -70,7 +70,10 @@ exports.dbInit = function(db, default_docs, callback) {
     var tournament_doc = {
         tournament: {
             name: "Turniername",
+            shortname: "Kurzname",
             location: "Ort",
+            email:"webmaster@onlinde.de",
+            sentmails: "sentmails",
             date: "Datum",
             url: "http://link-zur-auschreibung.de",
             description : "Turnierbeschreibung",
@@ -79,7 +82,8 @@ exports.dbInit = function(db, default_docs, callback) {
             entryfee: "10",
             paymentdeadline: "7",
             recipient: "Veranstalter",
-            IBAN: "DE"
+            IBAN: "DE",
+            imprint: ""
         }
     };
 

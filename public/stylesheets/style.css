@@ -341,16 +341,12 @@ p {
   font-size: 12px;
 }
 
-.input-long[type="text"] {
+.input.long[type="text"] {
   width: 900px;
-  padding: 9px 15px;
-  margin: 2px 15px 8px 15px;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  box-sizing: border-box;
-  font-family: IBMPlexSans-Regular,UbuntuRegular,sans-serif;
-  font-size: 12px;
+}
+
+.input.short[type="text"] {
+  width: 140px;
 }
 
 .input[type="number"] {

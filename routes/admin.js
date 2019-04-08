@@ -47,6 +47,7 @@ router.post('/setup', function (req, res) {
   var _id = req.body._id;
   var _rev = req.body._rev;
   var name = req.body.name;
+  var shortname = req.body.shortname;
   var date = req.body.date;
   var capacity = req.body.capacity;
   var location = req.body.location
@@ -57,6 +58,10 @@ router.post('/setup', function (req, res) {
   var paymentdeadline = req.body.paymentdeadline;
   var recipient = req.body.recipient.trim();
   var IBAN = req.body.IBAN;
+  var email = req.body.email;
+  var sentmails = req.body.sentmails ? "true" : "false";
+  var imprint = req.body.imprint;
+
 
   for (i=0; i<groups.length; i++) groups[i] = groups[i].trim();
 
@@ -68,6 +73,9 @@ router.post('/setup', function (req, res) {
     _rev: _rev,
     tournament: {
     name: name,
+    shortname: shortname,
+    email: email,
+    sentmails: sentmails,
     location: location,
     date: date,
     url: announcement,
@@ -77,7 +85,8 @@ router.post('/setup', function (req, res) {
     entryfee: entryfee,
     paymentdeadline: paymentdeadline,
     recipient: recipient,
-    IBAN: IBAN
+    IBAN: IBAN,
+    imprint : imprint
   }} 
   
   if (action=="update")
