@@ -90,7 +90,7 @@ exports.dbInit = function(db, default_docs, callback) {
     // Create an initial default administrator
     var root_doc = {
         userid:"root",
-        password:"root",    // FIX me: hash password
+        password:"$2b$10$vKxgstlxIX0iC6XBkqHPGe4oa.NOoFX7sb3Ios5YUcUB5KQhVOHR2",    // the bcyrpt hashed value of "root"
         level:"root"
     }
     

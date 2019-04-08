@@ -84,6 +84,8 @@ router.get('/imprint', function(req, res, next) {
    Verify User ID and Password and forward to the admin dash board */
    router.post('/login', function(req, res, next) {
   
+    bcrypt = require("bcrypt");
+
     // Set our internal DB variable
     var db = req.db;
   
@@ -93,16 +95,26 @@ router.get('/imprint', function(req, res, next) {
     var query = {"selector": { "userid":  userid} };
     db.find(query, function(err, users) {
       if (err) console.log(err);
-      console.log(users.length);
-      if (users.docs.length && password==users.docs[0].password) {   // FIXME: Compare with password hash
+      
+      if (users.docs.length) {
 
-        // sets a cookie with the user's info
-          req.session.userid = userid;
-          res.locals.userid = userid;
-          req.session.level = users.docs[0].level;
-          res.locals.level = users.docs[0].level;
-          
-          res.redirect("/admin/dashboard");   
+        bcrypt.compare(password, users.docs[0].password, function(err, success) {
+          if (success) {   // Successful Login
+            // sets a cookie with the user's info
+            req.session.userid = userid;
+            res.locals.userid = userid;
+            req.session.level = users.docs[0].level;
+            res.locals.level = users.docs[0].level;
+            
+            res.redirect("/admin/dashboard");
+          } else {
+            var query = {"selector": {"tournament": {"$gt": "" } } };
+            db.find(query, function (err, tournament) {
+              if (err) console.log(err);
+              res.render('login', { tournament: tournament.docs[0].tournament, message: "Ungültige User Id oder Passwort" });
+            });    
+          }
+        });   
       } else {
         var query = {"selector": {"tournament": {"$gt": "" } } };
         db.find(query, function (err, tournament) {

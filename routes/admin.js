@@ -347,7 +347,7 @@ router.get('/password', requireLogin, function(req, res, next) {
     // Set our internal DB variable
     var db = req.db;
     var userid = req.session.userid;
-    var pw = req.body.password1;        // FIXME: Hash PW
+    var pw = req.body.password1.trim();        // Password is hashed below
 
     var query = {"selector": { "userid":  userid} };
       
@@ -356,10 +356,14 @@ router.get('/password', requireLogin, function(req, res, next) {
       if (users.docs.length) {
 
         var u = users.docs[0];
-        var updateuser = { _id: u._id, _rev: u._rev, userid: u.userid, password: pw, level: u.level };
-        db.insert(updateuser).then(console.log);
+        bcrypt = require("bcrypt");
+        bcrypt.hash(pw, 10, function(err, hash) {
+          
+          var updateuser = { _id: u._id, _rev: u._rev, userid: u.userid, password: hash, level: u.level };
+          db.insert(updateuser).then(console.log);
     
-        res.redirect("/admin/dashboard");
+          res.redirect("/admin/dashboard");
+        });
       }
     });
   });
@@ -436,12 +440,14 @@ router.get('/webmaster/id/:_id/:action', requireLogin, function(req, res, next) 
    If we get an empty _id value we insert a new webmaster otherwise we look for the one with the _id and update it */
 router.post('/webmaster', requireLogin, function(req, res, next) {
 
+  var bcrypt = require("bcrypt");
+
   // Set our internal DB variable
   var db = req.db;
   
   var _id = req.body._id;
   var userid = req.body.userid.trim();
-  var password = req.body.password1.trim();  // FIXME Hash Password
+  var password = req.body.password1.trim();  // Password is hashed below before written to the database
   var level = req.body.level;
   var message = "";  
 
@@ -456,9 +462,12 @@ router.post('/webmaster', requireLogin, function(req, res, next) {
       {
           if (usercnt == 0)
           {
-            var webmaster = { userid: userid, password: password, level: level };
-            db.insert(webmaster).then(res.redirect("/admin/userlist"));
-            message = "Neuen Nutzer mit User Id: "+userid+" angelegt";
+            bcrypt.hash(password, 10, function(err, hash) {
+              
+              var webmaster = { userid: userid, password: hash, level: level };
+              db.insert(webmaster).then(res.redirect("/admin/userlist"));
+              message = "Neuen Nutzer mit User Id: "+userid+" angelegt";
+            });
           } else message="Fehler! Userid "+userid+" already exists";
           console.log(message);
       } else {
@@ -469,9 +478,12 @@ router.post('/webmaster', requireLogin, function(req, res, next) {
           if (users.docs.length) {
             if (userid == users.docs[0].userid || !usercnt)
             {  
-              var webmaster = { _id: users.docs[0]._id, _rev: users.docs[0]._rev, userid: userid, password: password, level: level };
-              db.insert(webmaster).then(res.redirect("/admin/userlist"));
-              message = "Nutzer Daten für "+userid+" aktualisiert";
+              bcrypt.hash(password, 10, function(err, hash) {
+
+                var webmaster = { _id: users.docs[0]._id, _rev: users.docs[0]._rev, userid: userid, password: hash, level: level };
+                db.insert(webmaster).then(res.redirect("/admin/userlist"));
+                message = "Nutzer Daten für "+userid+" aktualisiert";
+              });
             } else message="Fehler! Userid "+userid+" already exists";
           }
           console.log(message);
