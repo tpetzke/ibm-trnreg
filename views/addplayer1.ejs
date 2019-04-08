@@ -13,6 +13,7 @@
         <form id="formAddUser" name="adduser" method="post" action="/player/lookup_player">
             <input id="inputFirstname" class="input" type="text" placeholder="Vorname" name="firstname" />
             <input id="inputLastname" class="input" type="text" placeholder="Nachname" name="lastname" />
+            <input id="inputDuplicateCheck" class="input" type="hidden" name="duplicatecheck" value="true"/>
             <button id="btnSubmit" class="blue-button">Weiter zur Registrierung</button>
         </form>
         <%- include partials/footer.ejs %>

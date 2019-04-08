@@ -18,30 +18,40 @@ router.post('/lookup_player', function(req, res, next) {
   var db = req.db;
   var firstname = req.body.firstname.trim();
   var lastname = req.body.lastname.trim();
+  var duplicatecheck = req.body.duplicatecheck;   // true if coming from addplayer1, false if coming from dupliacte already
 
   firstname = firstname.charAt(0).toUpperCase() + firstname.slice(1);
   lastname = lastname.charAt(0).toUpperCase() + lastname.slice(1);
 
-  var query = {
-      "selector": {
-          "Name": lastname+","+firstname
-      }
-  };
-
-  dewisdb.find(query, function (err, dewis) {
+  if (duplicatecheck == "true")
+  {
+    var query = {"selector": {"Lastname": lastname, "Firstname" : firstname } };
     
-    var query = {
-      "selector": {
-          "tournament": {
-              "$gt": ""
-          }
+    db.find(query, function (err, players) {
+      if (players.docs.length) {
+        res.render('duplicate', { player: players.docs[0] });
+      } else {
+        var query = {"selector": {"Name": lastname+","+firstname } };
+        
+        dewisdb.find(query, function (err, dewis) {
+          var query = {"selector": {"tournament": {"$gt": "" } } };
+          db.find(query, function (err, tournament) {
+            res.render('addplayer2', { title: 'Spieler anmelden', firstname : firstname, lastname : lastname, tournament : tournament.docs[0].tournament, dewis: dewis });
+          });
+        });
       }
-    };
-
-    db.find(query, function (err, tournament) {
-      res.render('addplayer2', { title: 'Spieler anmelden', firstname : firstname, lastname : lastname, tournament : tournament.docs[0].tournament, dewis: dewis });
     });
-  });
+  } else {
+ 
+    var query = {"selector": {"Name": lastname+","+firstname } };
+        
+    dewisdb.find(query, function (err, dewis) {
+      var query = {"selector": {"tournament": {"$gt": "" } } };
+      db.find(query, function (err, tournament) {
+        res.render('addplayer2', { title: 'Spieler anmelden', firstname : firstname, lastname : lastname, tournament : tournament.docs[0].tournament, dewis: dewis });
+      });
+    });
+  };
 });
 
 /* POST to Verify Service */
