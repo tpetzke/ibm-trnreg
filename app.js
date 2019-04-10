@@ -17,6 +17,9 @@ try {
 const appEnvOpts = vcapLocal ? { vcap: vcapLocal } : {}
 const appEnv = cfenv.getAppEnv(appEnvOpts);
 
+console.log("Trying to get email pw: ");
+console.log("EMail PW: "+process.env.EMAIL_PW);
+
 // Load the Cloudant library.
 var Cloudant = require('@cloudant/cloudant');
 if (appEnv.services['cloudantNoSQLDB']) {
