@@ -1,0 +1,42 @@
+const internal = {};
+
+module.exports = internal.Email = class {
+
+    static sendConfirmation(tournament, player, playercnt) {
+        var ejs = require("ejs");
+      
+        ejs.renderFile("views/templates/mail.ejs", { tournament: tournament, player: player, playercnt : playercnt }, function (err, data) {
+          if (err) {
+              console.log(err);
+          } else {
+      
+            if (typeof process.env.EMAIL_USER !== 'undefined' && process.env.EMAIL_USER !== null && 
+                typeof process.env.EMAIL_PW !== 'undefined' && process.env.EMAIL_PW !== null) {
+      
+              var nodemailer = require('nodemailer');
+              var transporter = nodemailer.createTransport({
+                service: 'SendinBlue',
+                auth: {
+                  user: process.env.EMAIL_USER,
+                  pass: process.env.EMAIL_PW
+              }
+              });
+      
+              const mailOptions = {
+                from: tournament.email,     // sender address
+                to: 'thomas@fam-petzke.de', // list of receivers
+                subject: tournament.shortname + " - Bestätigung der Anmeldung", // Subject line
+                html: data                  // plain text body
+              };
+      
+              transporter.sendMail(mailOptions, function (err, info) {
+                if(err)
+                  console.log(err)
+                else
+                  console.log(info);
+              });
+            } else console.log("UserId and Password for email provider SendinBlue not found in process environment variables");
+          };
+        });
+      }
+}

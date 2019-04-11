@@ -12,6 +12,10 @@ exports.dbInit = function(db, default_docs, callback) {
            "player-count":  {  
                 "reduce":"_count",
                 "map":"function (doc) {\n  if (doc.Lastname) emit(doc._id, null);\n}"
+            },
+            "player-confirmed-count": {
+              "reduce": "_count",
+              "map": "function (doc) {\n  if (doc.Lastname && doc.status==\"confirmed\") emit(doc._id, null);\n}"
             }
         },
         "language":"javascript"

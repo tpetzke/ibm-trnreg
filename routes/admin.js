@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const TrnInfo = require('../classes/trninfo');
-
+const Email = require('../classes/email');
 
 /* Global function that checks for a user in the http request and if not present forwards to the login page 
    this is included in the function call that require a looged in user */ 
@@ -273,11 +273,26 @@ router.post('/modifyplayer', function(req, res, next) {
     var query = {"selector": {"_id": _id}};   // lookup the player in the database
     db.find(query, function(err, players) {
       var player = players.docs[0];
-      console.log("id: "+_id+" _rev: "+player._rev);
-        // Update player in the database    
+      var statuschange2confirmed = (player.status == "waitlisted" && status == "confirmed");  // check whether there is a change from waitlisted to confirmed
+      
+      // Update player in the database    
       var updateplayer = { _id: _id, _rev: player._rev, Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: player.datetime, status: status, paymentstatus: paymentstatus, dewis: player.dewisid };
       db.insert(updateplayer).then(console.log);
     
+      // send a notification mail to the player that he is now confirmed
+      if (statuschange2confirmed) 
+      {
+        var query = {"selector": {"tournament": {"$gt": "" } } };
+        db.find(query, function (err, tournament) {
+          db.view('app', 'player-confirmed-count', function(err, player) {
+            if (err) console.log(err);
+            var currentPlayerCnt = player.rows.length?player.rows[0].value:0;
+                
+            if (tournament.docs[0].tournament.sentmails == "true") Email.sendConfirmation(tournament.docs[0].tournament, updateplayer, currentPlayerCnt);
+          });
+        });
+      }
+
       res.redirect("/admin/allplayer");
     }); 
   } else if (req.body.submitted == "delete") {
