@@ -23,7 +23,11 @@ router.get('/', function(req, res, next) {
         if (err) console.log(err);
         var playercnt = 0;
         if (player.rows.length) playercnt = player.rows[0].value;
-        res.render('index', { tournament: tournament.docs[0].tournament, playercnt: playercnt });
+
+        // temp:
+        var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+
+        res.render('index', { tournament: tournament.docs[0].tournament, playercnt: playercnt, url : fullUrl });
       });
   });
 });

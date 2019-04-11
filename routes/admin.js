@@ -248,7 +248,7 @@ router.get('/player/id/:id', requireLogin, function(req, res, next) {
 /* POST from the modify player page
     we have to check whether the pressed button was the save button then we save 
     we will forward in both cases back to the player listing */
-router.post('/modifyplayer', function(req, res, next) {
+router.post('/modifyplayer', requireLogin, function(req, res, next) {
 
   // Set our internal DB variable
   var db = req.db;
