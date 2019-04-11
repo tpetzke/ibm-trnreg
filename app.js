@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('client-sessions');
 
+// read the .env file and make the value of VARIABLE available via process.env.VARIABLE
+require('dotenv').config(); 
 
 // load local VCAP configuration  and service credentials
 var vcapLocal;
@@ -16,9 +18,6 @@ try {
 
 const appEnvOpts = vcapLocal ? { vcap: vcapLocal } : {}
 const appEnv = cfenv.getAppEnv(appEnvOpts);
-
-console.log("Trying to get email pw: ");
-console.log("EMail PW: "+process.env.EMAIL_PW);
 
 // Load the Cloudant library.
 var Cloudant = require('@cloudant/cloudant');

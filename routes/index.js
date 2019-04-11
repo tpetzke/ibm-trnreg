@@ -195,40 +195,39 @@ router.get('/imprint', function(req, res, next) {
   });
 
 
-  /* GET club page.
+/* GET club page.
    Read the Tournament data and the player list per club to assemble a club view
    in the http req the field "club" points to the name of the requested club */
-   router.get('/club', function(req, res, next) {
-  
-    // Set our internal DB variable
-    var db = req.db;
-  
-    var query = {
-        "selector": {
-            "tournament": {
-                "$gt": ""
-            }
-        }
-    };
+router.get('/club', function(req, res, next) {
 
-    var club_name = req.query.club;
-    
-    db.find(query, function (err, tournament) {
-      // 'tournament' contains results
-    
-      query =  {
-        "selector": {
-           "Club": club_name
-        }
+  // Set our internal DB variable
+  var db = req.db;
+
+  var query = {
+      "selector": {
+          "tournament": {
+              "$gt": ""
+          }
       }
+  };
 
-      db.find(query, function (err, data) {
-        data.docs.sort(function(a, b) { if(a.Firstname+a.Lastname > b.Firstname+b.Lastname) return 1; else return -1}); 
-        res.render('club', { ClubName: club_name, tournament: tournament.docs[0].tournament, data: data });
-      });
-
-    });
+  var club_name = req.query.club;
   
+  db.find(query, function (err, tournament) {
+    // 'tournament' contains results
+  
+    query =  {
+      "selector": {
+          "Club": club_name
+      }
+    }
+
+    db.find(query, function (err, data) {
+      data.docs.sort(function(a, b) { if(a.Firstname+a.Lastname > b.Firstname+b.Lastname) return 1; else return -1}); 
+      res.render('club', { ClubName: club_name, tournament: tournament.docs[0].tournament, data: data });
+    });
+
   });
+});
 
 module.exports = router;

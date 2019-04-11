@@ -8,7 +8,7 @@
     <div  id="container">
         <img src="/images/chess-banner.jpg" alt="" width="940" height="243">
         <br>
-        <h1>Willkommen im Turnier, <%= Name %></h1>
+        <h1>Willkommen im Turnier, <%= (player.Title !== "" ? player.Title + " " : "") + player.Firstname + " " + player.Lastname %></h1>
         <h3>Die Anmeldung erfolgte für die Turniergruppe <%= Group %></h3>
         <table id="players">
             <tr>
@@ -37,10 +37,10 @@
           <tbody>
             <tr><td><b>Empfänger:</b></td><td><%=tournament.recipient%></td>
             <tr><td><b>IBAN:</b></td><td><%=tournament.IBAN%></td></tr>
-            <tr><td><b>Verwendungszweck:</b></td><td><%=tournament.shortname%>, <%=Name%></td></tr>
+            <tr><td><b>Verwendungszweck:</b></td><td><%=tournament.shortname%>, <%=player.Firstname + " " + player.Lastname%></td></tr>
           </tbody>
         </table>
-        <h4>Bei Nichtüberweisung innerhalb der Frist verfällt Ihre Anmeldung und Sie müssen sich erneut anmelden!</h4>
+        <h4>Bei Nichtüberweisung verfällt Ihre Anmeldung gegebenenfalls und Sie müssen sich erneut anmelden!</h4>
          <% } %>
         <div id="index_button_container">
         <br>

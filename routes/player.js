@@ -83,6 +83,43 @@ router.post('/verifyplayer', function (req, res) {
   res.render("addplayer3", { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, dewisid: dewisid, capacity : capacity });
 });
 
+function sendConfirmation(tournament, player, playercnt) {
+  var ejs = require("ejs");
+
+  ejs.renderFile("views/templates/mail.ejs", { tournament: tournament, player: player, playercnt : playercnt }, function (err, data) {
+    if (err) {
+        console.log(err);
+    } else {
+
+      if (typeof process.env.EMAIL_USER !== 'undefined' && process.env.EMAIL_USER !== null && 
+          typeof process.env.EMAIL_PW !== 'undefined' && process.env.EMAIL_PW !== null) {
+
+        var nodemailer = require('nodemailer');
+        var transporter = nodemailer.createTransport({
+          service: 'SendinBlue',
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PW
+        }
+        });
+
+        const mailOptions = {
+          from: tournament.email,     // sender address
+          to: 'thomas@fam-petzke.de', // list of receivers
+          subject: tournament.shortname + " - Bestätigung der Anmeldung", // Subject line
+          html: data                  // plain text body
+        };
+
+        transporter.sendMail(mailOptions, function (err, info) {
+          if(err)
+            console.log(err)
+          else
+            console.log(info);
+        });
+      } else console.log("UserId and Password for email provider SendinBlue not found in process environment variables");
+    };
+  });
+}
 
 /* POST to Add Player Service */
 router.post('/addplayer', function (req, res) {
@@ -127,8 +164,10 @@ router.post('/addplayer', function (req, res) {
         var newplayer = { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, status: status, paymentstatus: paymentstatus, dewis: dewisid };
         db.insert(newplayer).then(console.log);
 
+        sendConfirmation(tournament.docs[0].tournament, newplayer, currentPlayerCnt);
+
         // And forward to success page
-        res.render("success", { Name: firstname + ' ' + lastname, Group: group_desc, status: status, capacity: capacity, playercnt : currentPlayerCnt, tournament: tournament.docs[0].tournament});
+        res.render("success", { player: newplayer, Group: group_desc, status: status, capacity: capacity, playercnt : currentPlayerCnt, tournament: tournament.docs[0].tournament});
       });
     });
   
