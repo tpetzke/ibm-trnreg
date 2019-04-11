@@ -164,7 +164,7 @@ router.post('/addplayer', function (req, res) {
         var newplayer = { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, status: status, paymentstatus: paymentstatus, dewis: dewisid };
         db.insert(newplayer).then(console.log);
 
-        sendConfirmation(tournament.docs[0].tournament, newplayer, currentPlayerCnt);
+        if (tournament.docs[0].tournament.sentmails == "true") sendConfirmation(tournament.docs[0].tournament, newplayer, currentPlayerCnt);
 
         // And forward to success page
         res.render("success", { player: newplayer, Group: group_desc, status: status, capacity: capacity, playercnt : currentPlayerCnt, tournament: tournament.docs[0].tournament});
