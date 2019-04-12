@@ -23,7 +23,7 @@
             </div>
             <div style="float:left;margin-right:20px;">
             <label for="email">Turnier E-Mail Adresse</label>
-            <input id="email" class="input" type="text" placeholder="Turnier E-Mail Adresse" name="email" value="<%=tournament.email%>"/>
+            <input id="email" class="input" type="email" placeholder="Turnier E-Mail Adresse" name="email" value="<%=tournament.email%>" required/>
             </div>
             <div style="float:left;margin-right:20px;">
               <input type="checkbox" name="sentmails" id="sentmails" value="sentmails" <%=tournament.sentmails=="true"?" checked ":""%> style="float:left;margin-left:20px;margin-top:20px;">
