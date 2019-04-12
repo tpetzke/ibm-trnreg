@@ -171,13 +171,14 @@ module.exports = internal.TrnInfo = class {
     // 0: Tournament DWZ, 1: Males, 2: Females
     collectAvgDWZ() {
         var dwzs = [0, 0, 0], cnts = [0, 0, 0], i, dwz;
-        cnts[0] = this.players.length;
         
         for (i = 0; i < this.players.length; i++) if (this.players[i].status == "confirmed") {
-            if (this.players[i].Sex == "male") cnts[1]++; else cnts[2]++
-            dwz = (typeof this.players[i].DWZ !== "undefined") ? parseInt(this.players[i].DWZ) : 700;
-            if (this.players[i].Sex == "male") dwzs[1] += dwz; else dwzs[2] += dwz;
+            cnts[0]++;
+            dwz = (typeof this.players[i].DWZ !== "undefined" && this.players[i].DWZ !== "") ? parseInt(this.players[i].DWZ) : 700;
             dwzs[0] += dwz;
+            var idx = this.players[i].Sex == "male" ? 1 : 2;
+            cnts[idx]++; 
+            dwzs[idx]+= dwz;
         }
         for (i=0; i<3; i++) dwzs[i] = cnts[i] > 0 ? Number.parseFloat(dwzs[i] / cnts[i]).toFixed(1) : 0;
 
