@@ -24,8 +24,9 @@ module.exports = internal.Email = class {
       
               const mailOptions = {
                 from: tournament.email,     // sender address
-                to: 'thomas@fam-petzke.de', // list of receivers
-                subject: tournament.shortname + " - Bestätigung der Anmeldung", // Subject line
+                to: player.email, // list of receivers
+                cc: 'tpetzke@gmx.de',
+                subject: tournament.shortname + ' - Meldebestätigung - ' + player.Firstname + ' ' + player.Lastname, // Subject line
                 html: data                  // plain text body
               };
       

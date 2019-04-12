@@ -40,7 +40,7 @@
             </div>
             <div style="float:left;">
             <label for="inputYOB">Geburtsjahr (4-stellig)</label>
-            <input id="inputYOB" class="input" type="number" placeholder="2000" name="YOB" min="1900" value="<%=dewis.docs.length?dewis.docs[0].YOB:""%>" required/>
+            <input id="inputYOB" class="input" type="number" name="YOB" min="1900" value="<%=dewis.docs.length?dewis.docs[0].YOB:""%>" required/>
             </div>
             <br style="clear:both;" />
             
@@ -79,7 +79,7 @@
             </div>
             <div style="float:left">
               <label for="inputEmail">Email</label>
-              <input id="inputEmail" class="input" type="text" placeholder="Email" name="email" required/>
+              <input id="inputEmail" class="input" type="email" placeholder="Email" name="email" required/>
             </div>
             <br style="clear:both">
             <button id="btnSubmit" class="blue-button">Anmeldung überprüfen</button>
