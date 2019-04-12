@@ -37,16 +37,12 @@
             <input id="inputYOB" class="input" type="number" placeholder="2000" name="yob" min="1900" value="<%=player.YOB%>" required/>
             </div>
             <br style="clear:both;" />
-            
-            <% 
-               var groupsel = [];
-               for (i=0; i<tournament.groups.length; i++) if (tournament.groups[i] == player.Group) groupsel.push("selected"); else groupsel.push(""); 
-            %>
+
             <div style="float:left;margin-right:20px;">
             <label for="selectGroup">Turniergruppe</label>
             <select id="selectGroup" name="group" required>
             <% for(i = 0; i < tournament.groups.length; i++) { %> 
-                    <option value="<%= tournament.groups[i] %>" <%=groupsel[i]%>><%= tournament.groups[i] %></option>
+                    <option value="<%= tournament.groups[i] %>" <%=(tournament.groups[i] == player.Group) ? " selected" : ""%>><%= tournament.groups[i] %></option>
             <% } %>
             </select>
             </div>

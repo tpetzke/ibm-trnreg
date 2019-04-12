@@ -2,10 +2,10 @@ const internal = {};
 
 module.exports = internal.Email = class {
 
-    static sendConfirmation(tournament, player, playercnt) {
+    static sendConfirmation(tournament, player, playercnt, url) {
         var ejs = require("ejs");
       
-        ejs.renderFile("views/templates/mail.ejs", { tournament: tournament, player: player, playercnt : playercnt }, function (err, data) {
+        ejs.renderFile("views/templates/mail.ejs", { tournament: tournament, player: player, playercnt : playercnt, url: url }, function (err, data) {
           if (err) {
               console.log(err);
           } else {
@@ -38,5 +38,11 @@ module.exports = internal.Email = class {
             } else console.log("UserId and Password for email provider SendinBlue not found in process environment variables");
           };
         });
-      }
+    }
+
+    static getSecret(datetime) {
+      var skey = (datetime % 10000000).toString(), secret = "";
+      for (var i=0; i<skey.length; i++) secret += String.fromCharCode(65 + parseInt(skey[0]) + parseInt(skey[i]));
+      return secret;  
+    }
 }

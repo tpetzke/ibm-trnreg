@@ -265,6 +265,11 @@ h4 {
   margin: 15px;
 }
 
+h4 a, a:visited, a:hover {
+  text-decoration: none;
+  color: #0074E1;
+}
+
 p {
   font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
   font-size: 15px;

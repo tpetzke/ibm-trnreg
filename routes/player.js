@@ -126,12 +126,19 @@ router.post('/addplayer', function (req, res) {
 
         // Insert player to the database    
         var newplayer = { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, status: status, paymentstatus: paymentstatus, dewis: dewisid };
-        db.insert(newplayer).then(console.log);
+        db.insert(newplayer, function(err, data) {
+          console.log(data);
 
-        if (tournament.docs[0].tournament.sentmails == "true") Email.sendConfirmation(tournament.docs[0].tournament, newplayer, currentPlayerCnt);
+          // calculate the maintenance URL
+          var secret = Email.getSecret(newplayer.datetime);
+          var fullUrl = req.protocol + '://' + req.get('host') + "/edit4p/id/"+data.id+"/"+secret;
 
-        // And forward to success page
-        res.render("success", { player: newplayer, Group: group_desc, status: status, capacity: capacity, playercnt : currentPlayerCnt, tournament: tournament.docs[0].tournament});
+          if (tournament.docs[0].tournament.sentmails == "true") Email.sendConfirmation(tournament.docs[0].tournament, newplayer, currentPlayerCnt, fullUrl);
+
+          // And forward to success page
+          res.render("success", { player: newplayer, Group: group_desc, status: status, capacity: capacity, playercnt : currentPlayerCnt, tournament: tournament.docs[0].tournament, url: fullUrl});
+  
+        });
       });
     });
   

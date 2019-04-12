@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+const Email = require('../classes/email');
+
 /* GET home page.
    Read the Tournament data to presented on the homepage from the database */
 router.get('/', function(req, res, next) {
@@ -24,10 +26,7 @@ router.get('/', function(req, res, next) {
         var playercnt = 0;
         if (player.rows.length) playercnt = player.rows[0].value;
 
-        // temp:
-        var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-
-        res.render('index', { tournament: tournament.docs[0].tournament, playercnt: playercnt, url : fullUrl });
+        res.render('index', { tournament: tournament.docs[0].tournament, playercnt: playercnt });
       });
   });
 });
@@ -232,6 +231,92 @@ router.get('/club', function(req, res, next) {
     });
 
   });
+});
+
+/* GET player maintenance page to allow a player to modify its own details. The player id is given in the request as _id together with a secret key.
+   The secret key is calculated from later numbers of the datetime property (seconds and milliseconds) 
+  Read the Tournament data and player from the DB to prefill the player input fields */
+router.get('/edit4p/id/:_id/:key', function(req, res, next) {
+
+  // Set our internal DB variable
+  var db = req.db;
+  var _id = req.params._id;
+  var key = req.params.key;
+
+  var query = {"selector": {"tournament": {"$gt": ""} } };
+
+  db.find(query, function (err, tournament) {
+
+    var query = {"selector": {"_id": _id}};  
+    db.find(query, function (err, players) {
+      var secret;
+      if (players.docs.length && key == (secret = Email.getSecret(players.docs[0].datetime))) {
+
+        res.render('modplayer4p', { tournament: tournament.docs[0].tournament, player: players.docs[0], key: secret }); 
+      } else res.redirect("/");
+    });
+  });
+    
+});
+  
+/* POST player maintenance page to allow a player to modify its own details. 
+   The secret key is calculated from later numbers of the datetime property (seconds and milliseconds) 
+  Read the Tournament data and player from the DB to prefill the player input fields */
+router.post('/edit4p', function(req, res, next) {
+
+  // Set our internal DB variable
+  var db = req.db;
+
+  if (req.body.submitted == "save")
+  {
+    // Get our form values. These rely on the "name" attributes
+    var firstname = req.body.firstname.trim();
+    var lastname = req.body.lastname.trim();
+    var title = req.body.title.trim();
+    var dwz = req.body.dwz;
+    var elo = req.body.elo;
+    var email = req.body.email;
+    var group = req.body.group;
+    var sex = req.body.sex;
+    var club = req.body.club.trim();
+    var yob = req.body.yob;
+    var _id = req.body._id;
+    var key = req.body.key;
+
+    var query = {"selector": {"_id": _id}};   // lookup the player in the database
+    db.find(query, function(err, players) {
+   
+      if (players.docs.length && key == Email.getSecret(players.docs[0].datetime)) {
+        var player = players.docs[0];
+
+        // Update player in the database    
+        var updateplayer = { _id: _id, _rev: player._rev, Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: player.datetime, status: player.status, paymentstatus: player.paymentstatus, dewis: player.dewisid };
+        db.insert(updateplayer).then(console.log);
+
+        // And forward to success page
+        res.render("confirmupdate", { player: updateplayer, message: "Die Anmeldung wurde aktualisiert" });
+      } else res.redirect("/"); 
+    }); 
+  } else if (req.body.submitted == "delete") {
+
+    var _id = req.body._id;
+    var key = req.body.key;
+    var query = {"selector": {"_id": _id}};   // lookup the player in the database
+    db.find(query, function(err, players) {
+
+      if (players.docs.length && key == Email.getSecret(players.docs[0].datetime)) {
+        var player = players.docs[0];
+
+        console.log("Deleting player: "+ player.Lastname +" id: "+_id+" _rev: "+player._rev);
+        db.destroy(player._id, player._rev, function(err, body) {
+          if (err) console.log(err); else console.log(body);
+          res.render("confirmupdate", { player: player, message: "Die Anmeldung wurde gelöscht" });
+        });
+      } else res.redirect("/"); 
+    });
+
+  } else res.redirect("/");
+    
 });
 
 module.exports = router;
