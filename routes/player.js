@@ -129,14 +129,19 @@ router.post('/addplayer', function (req, res) {
         db.insert(newplayer, function(err, data) {
           console.log(data);
 
-          // calculate the maintenance URL
+          // calculate the URLs
+          var idx = 0;
+          for (var i=0; i<tournament.docs[0].tournament.groups.length; i++) if (tournament.docs[0].tournament.groups[i] == group) idx = i;
           var secret = Email.getSecret(newplayer.datetime);
-          var fullUrl = req.protocol + '://' + req.get('host') + "/edit4p/id/"+data.id+"/"+secret;
+          var playerUrl = req.protocol + '://' + req.get('host') + "/edit4p/id/"+data.id+"/"+secret;
+          var groupUrl = req.protocol + '://' + req.get('host') + "/group?idx="+idx;
 
-          if (tournament.docs[0].tournament.sentmails == "true") Email.sendConfirmation(tournament.docs[0].tournament, newplayer, currentPlayerCnt, fullUrl);
+          var links = {"player":playerUrl, "group": groupUrl};
+
+          if (tournament.docs[0].tournament.sentmails == "true") Email.sendConfirmation(tournament.docs[0].tournament, newplayer, currentPlayerCnt, links);
 
           // And forward to success page
-          res.render("success", { player: newplayer, Group: group_desc, status: status, capacity: capacity, playercnt : currentPlayerCnt, tournament: tournament.docs[0].tournament, url: fullUrl});
+          res.render("success", { player: newplayer, Group: group_desc, status: status, capacity: capacity, playercnt : currentPlayerCnt, tournament: tournament.docs[0].tournament, links: links});
   
         });
       });

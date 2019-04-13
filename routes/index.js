@@ -173,6 +173,7 @@ router.get('/imprint', function(req, res, next) {
     var group_name = "";
     db.find(query, function (err, tournament) {
       // 'tournament' contains results
+      if (idx <0 || idx >= tournament.docs[0].tournament.groups.length) idx = 0;
       group_name = tournament.docs[0].tournament.groups[idx];
 
       query =  {

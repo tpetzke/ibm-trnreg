@@ -2,10 +2,10 @@ const internal = {};
 
 module.exports = internal.Email = class {
 
-    static sendConfirmation(tournament, player, playercnt, url) {
+    static sendConfirmation(tournament, player, playercnt, links) {
         var ejs = require("ejs");
       
-        ejs.renderFile("views/templates/mail.ejs", { tournament: tournament, player: player, playercnt : playercnt, url: url }, function (err, data) {
+        ejs.renderFile("views/templates/mail.ejs", { tournament: tournament, player: player, playercnt : playercnt, links: links }, function (err, data) {
           if (err) {
               console.log(err);
           } else {
@@ -25,7 +25,7 @@ module.exports = internal.Email = class {
               const mailOptions = {
                 from: tournament.email,     // sender address
                 to: player.email, // list of receivers
-                cc: 'tpetzke@gmx.de',
+                cc: tournament.email,
                 subject: tournament.shortname + ' - Meldebestätigung - ' + player.Firstname + ' ' + player.Lastname, // Subject line
                 html: data                  // plain text body
               };

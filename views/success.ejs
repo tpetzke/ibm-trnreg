@@ -9,7 +9,7 @@
         <img src="/images/chess-banner.jpg" alt="" width="940" height="243">
         <br>
         <h1>Willkommen im Turnier, <%= (player.Title !== "" ? player.Title + " " : "") + player.Firstname + " " + player.Lastname %></h1>
-        <h3>Die Anmeldung erfolgte für die Turniergruppe <%= Group %></h3>
+        <h3>Die Anmeldung erfolgte für die Turniergruppe <a href="<%=links.group%>" style="text-decoration: none;color: #0074E1;"><%= Group %></a></h3>
         <table id="players">
             <tr>
             <th>Information</th>
