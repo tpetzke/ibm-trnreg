@@ -213,6 +213,14 @@ router.post('/refreshplayerlist', function(req, res, next) {
     var query = {"selector": {"Lastname": {"$gt": ""}}, "sort": ["status","datetime"]};  
     db.find(query, function (err, players) {
       if (err) console.log(err);
+
+      var d = Date.now();
+      if (tournament.docs[0].tournament.paymentdeadline != "0") {
+        for (i = 0; i < players.docs.length; i++) {
+          if (players.docs[i].paymentstatus == "open" && d > (parseInt(players.docs[i].datetime) + (24*60*60*1000 * parseInt(tournament.docs[0].tournament.paymentdeadline)))) players.docs[i].paymentstatus = "overdue";
+        };
+      };
+
       res.render('allplayer', { tournament: tournament.docs[0].tournament, players: players });
     });
   });

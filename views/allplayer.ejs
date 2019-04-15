@@ -29,6 +29,7 @@
           var paymentStatusTitle = "Bezahlt";
           if (players.docs[i].paymentstatus == "open") paymentStatusTitle = "Offen";
           if (players.docs[i].paymentstatus == "free") paymentStatusTitle = "Frei";
+          if (players.docs[i].paymentstatus == "overdue") paymentStatusTitle = "Überfällig";
         %>
         <tr>
            <td style="text-align:center"><%=i+1%></td>
