@@ -516,4 +516,20 @@ router.post('/webmaster', requireLogin, function(req, res, next) {
   } else console.log("Berechtigungsfehler!");
 });
 
+router.get('/download', requireLogin, function(req, res, next) {
+
+  var data = [];
+  data.push('Zahl,Text,Text');
+  data.push('1,Hallo,Welt');
+  data.push('2,Hallo,Universum');
+
+  var EasyZip = require('easy-zip2').EasyZip;
+  var zip = new EasyZip();
+  zip.file('spieler.csv', data);
+  zip.writeToFile('spieler.zip');
+
+  res.redirect("/admin/dashboard");
+});
+
+
 module.exports = router;
