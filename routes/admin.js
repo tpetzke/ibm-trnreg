@@ -535,6 +535,7 @@ router.get('/download', requireLogin, function(req, res, next) {
     var tm = new Date();
     var ts = tm.toString().slice(4,15).replace(/\s+/g, '');
   
+    /*
     res.setHeader('Content-Type', 'text/csv; charset=UTF-8');
     res.setHeader('Content-Disposition', 'attachment; filename=\"' + 'Spieler-' + ts + '.csv\"');
     res.setHeader('Cache-Control', 'no-cache');
@@ -542,6 +543,12 @@ router.get('/download', requireLogin, function(req, res, next) {
 
     stringify(players.docs, { header: true }).pipe(res);
     res.redirect("/admin/dashboard");
+    */
+    stringify(players.docs, { header: true }, function (err, data) {
+
+      res.writeHead(200, {"Content-Type": "text/csv", 'Content-Disposition': 'attachment; filename=\"' + 'Spieler-' + ts + '.csv\"'});
+      res.end(data);
+    });
   });
 });
 
