@@ -518,17 +518,30 @@ router.post('/webmaster', requireLogin, function(req, res, next) {
 
 router.get('/download', requireLogin, function(req, res, next) {
 
-  var data = [];
-  data.push('Zahl,Text,Text');
-  data.push('1,Hallo,Welt');
-  data.push('2,Hallo,Universum');
+  var db = req.db;
+  var query = {
+    "selector": {
+      "Lastname": {"$gt": ""},
+      "status": "confirmed"
+    },
+   "fields": ["Title","Firstname","Lastname","DWZ","ELO","YOB","Sex","Club","YOB"]
+  };  
+   
+  db.find(query, function (err, players) {
+    if (err) console.log(err);
+    
+    const stringify = require('csv-stringify');
 
-  var EasyZip = require('easy-zip2').EasyZip;
-  var zip = new EasyZip();
-  zip.file('spieler.csv', data);
-  zip.writeToFile('spieler.zip');
+    var tm = new Date();
+    var ts = tm.toString().slice(4,15).replace(/\s+/g, '');
 
-  res.redirect("/admin/dashboard");
+    res.setHeader('Content-Type', 'text/csv; charset=UTF-8');
+    res.setHeader('Content-Disposition', 'attachment; filename=\"' + 'Spieler-' + ts + '.csv\"');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Pragma', 'no-cache');
+
+    stringify(players.docs, { header: true }).pipe(res);
+  });
 });
 
 
