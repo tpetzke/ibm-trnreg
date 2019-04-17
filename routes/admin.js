@@ -536,14 +536,19 @@ router.get('/download', requireLogin, function(req, res, next) {
     var tm = new Date();
     var ts = tm.toString().slice(4,15).replace(/\s+/g, '');
 
-    console.log(data);
+    stringify(players.docs, { header: true }), function(err, data) {
+      console.log(data);
+    }
 
+    /*
     res.setHeader('Content-Type', 'text/csv; charset=UTF-8');
     res.setHeader('Content-Disposition', 'attachment; filename=\"' + 'Spieler-' + ts + '.csv\"');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Pragma', 'no-cache');
 
     stringify(players.docs, { header: true }).pipe(res);
+    */
+     res.redirect("/admin/dashboard");
   });
 });
 
