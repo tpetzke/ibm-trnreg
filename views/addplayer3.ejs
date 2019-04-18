@@ -23,6 +23,7 @@
         <input type="hidden" id="yob" name="yob" value="<%=YOB%>">
         <input type="hidden" id="dwz" name="dwz" value="<%=DWZ%>">
         <input type="hidden" id="elo" name="elo" value="<%=ELO%>">
+        <input type="hidden" id="country" name="country" value="<%=Country%>">
         <input type="hidden" id="email" name="email" value="<%=email%>">
         <input type="hidden" id="group" name="group" value="<%=Group%>">
         <input type="hidden" id="sex" name="sex" value="<%=Sex%>">
@@ -77,6 +78,10 @@
                   <td><%=ELO%></td>
                   </tr>
                   <tr>
+                  <td>Land</td>
+                  <td><%=Country%></td>
+                  </tr>
+                  <tr>
                       <td>Turniergruppe</td>
                       <td><%=Group%></td>
                   </tr>
@@ -87,8 +92,8 @@
                       <td><%=ts%></td>
                   </tr>
               </table>
-              <input type="checkbox" name="accept" id="accept" value="accept" style="float:left;margin-left:20px;margin-top:20px;">
-              <label for="accept" class="chkbox" style="float:left;margin:16px;">Ich akzeptiere die Turnierbedingungen</label>
+              <input type="checkbox" name="accept" id="accept" value="accept" style="float:left;margin-left:20px;margin-top:10px;">
+              <label for="accept" class="chkbox" style="float:left;margin:6px;">Ich akzeptiere die Turnierbedingungen</label>
             </div>
             <div style="float:left; margin-left:20px; margin-bottom:30px; width:500px;">
             <h3>Turnierbedingungen</h3> 

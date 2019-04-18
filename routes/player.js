@@ -76,13 +76,14 @@ router.post('/verifyplayer', function (req, res) {
   var capacity = req.body.capacity;
   var title = req.body.title.trim().toUpperCase();
   var yob = req.body.YOB;
+  var country = req.body.country.trim().toUpperCase();;
  
   firstname = firstname.charAt(0).toUpperCase() + firstname.slice(1);
   lastname = lastname.charAt(0).toUpperCase() + lastname.slice(1);
   club = club.charAt(0).toUpperCase() + club.slice(1);
 
   // And forward to verify page
-  res.render("addplayer3", { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, dewisid: dewisid, capacity : capacity });
+  res.render("addplayer3", { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Country: country, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, dewisid: dewisid, capacity : capacity });
 });
 
 /* POST to Add Player Service */
@@ -100,6 +101,7 @@ router.post('/addplayer', function (req, res) {
     var dwz = req.body.dwz;
     var elo = req.body.elo;
     var yob = req.body.yob;
+    var country = req.body.country.toUpperCase();
     var email = req.body.email;
     var group = req.body.group;
     var sex = req.body.sex;
@@ -125,7 +127,7 @@ router.post('/addplayer', function (req, res) {
         if (capacity > 0 && currentPlayerCnt >= capacity) status="waitlisted";
 
         // Insert player to the database    
-        var newplayer = { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, status: status, paymentstatus: paymentstatus, dewis: dewisid };
+        var newplayer = { Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Country: country, Group: group, Sex: sex, Club: club, email: email, datetime: datetime, status: status, paymentstatus: paymentstatus, dewis: dewisid };
         db.insert(newplayer, function(err, data) {
           console.log(data);
 

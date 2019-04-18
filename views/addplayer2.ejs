@@ -42,6 +42,10 @@
             <label for="inputYOB">Geburtsjahr (4-stellig)</label>
             <input id="inputYOB" class="input" type="number" name="YOB" min="1900" value="<%=dewis.docs.length?dewis.docs[0].YOB:""%>" required/>
             </div>
+            <div style="float:left;margin-left:34px;">
+            <label for="inputCountry">Land</label>
+            <input style="width:75px;" id="inputCountry" class="input" type="text" name="country" value="<%=dewis.docs.length?dewis.docs[0].Country:""%>"/>
+            </div>
             <br style="clear:both;" />
             
             <% var selMale = "selected";

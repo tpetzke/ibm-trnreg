@@ -276,6 +276,7 @@ router.post('/modifyplayer', requireLogin, function(req, res, next) {
     var status = req.body.status;
     var paymentstatus = req.body.paymentstatus;
     var yob = req.body.yob;
+    var country = req.body.country;
     var _id = req.body._id;
 
     var query = {"selector": {"_id": _id}};   // lookup the player in the database
@@ -284,7 +285,7 @@ router.post('/modifyplayer', requireLogin, function(req, res, next) {
       var statuschange2confirmed = (player.status == "waitlisted" && status == "confirmed");  // check whether there is a change from waitlisted to confirmed
       
       // Update player in the database    
-      var updateplayer = { _id: _id, _rev: player._rev, Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: player.datetime, status: status, paymentstatus: paymentstatus, dewis: player.dewisid };
+      var updateplayer = { _id: _id, _rev: player._rev, Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Country: country, Group: group, Sex: sex, Club: club, email: email, datetime: player.datetime, status: status, paymentstatus: paymentstatus, dewis: player.dewisid };
       db.insert(updateplayer).then(console.log);
     
       // send a notification mail to the player that he is now confirmed
@@ -524,7 +525,7 @@ router.get('/download', requireLogin, function(req, res, next) {
       "Lastname": {"$gt": ""},
       "status": "confirmed"
     },
-   "fields": ["Title","Firstname","Lastname","DWZ","ELO","YOB","Sex","Club","YOB"]
+   "fields": ["Group","Title","Firstname", "Lastname","Club","ELO","DWZ"]
   };  
    
   db.find(query, function (err, players) {
@@ -535,20 +536,13 @@ router.get('/download', requireLogin, function(req, res, next) {
     var tm = new Date();
     var ts = tm.toString().slice(4,15).replace(/\s+/g, '');
   
-    /*
-    res.setHeader('Content-Type', 'text/csv; charset=UTF-8');
-    res.setHeader('Content-Disposition', 'attachment; filename=\"' + 'Spieler-' + ts + '.csv\"');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Pragma', 'no-cache');
-
-    stringify(players.docs, { header: true }).pipe(res);
-    res.redirect("/admin/dashboard");
-    */
+    
     stringify(players.docs, { header: true }, function (err, data) {
 
       res.writeHead(200, {"Content-Type": "text/csv", 'Content-Disposition': 'attachment; filename=\"' + 'Spieler-' + ts + '.csv\"'});
       res.end(data);
-    });
+    }); 
+
   });
 });
 

@@ -281,6 +281,7 @@ router.post('/edit4p', function(req, res, next) {
     var sex = req.body.sex;
     var club = req.body.club.trim();
     var yob = req.body.yob;
+    var country = req.body.country.trim().toUpperCase();
     var _id = req.body._id;
     var key = req.body.key;
 
@@ -291,7 +292,7 @@ router.post('/edit4p', function(req, res, next) {
         var player = players.docs[0];
 
         // Update player in the database    
-        var updateplayer = { _id: _id, _rev: player._rev, Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Group: group, Sex: sex, Club: club, email: email, datetime: player.datetime, status: player.status, paymentstatus: player.paymentstatus, dewis: player.dewisid };
+        var updateplayer = { _id: _id, _rev: player._rev, Title: title, Firstname: firstname, Lastname: lastname, DWZ: dwz, ELO: elo, YOB: yob, Country: country, Group: group, Sex: sex, Club: club, email: email, datetime: player.datetime, status: player.status, paymentstatus: player.paymentstatus, dewis: player.dewisid };
         db.insert(updateplayer).then(console.log);
 
         // And forward to success page
