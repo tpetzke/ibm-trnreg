@@ -31,6 +31,10 @@ module.exports = internal.TrnInfo = class {
         return cnt;
     }
 
+    getGroups() {
+        return this.tournament.groups;
+    }
+
     getPlayerCnt() {
         return this.players.length;
     }

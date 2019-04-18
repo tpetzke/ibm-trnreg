@@ -167,6 +167,8 @@ router.post('/refreshplayerlist', function(req, res, next) {
         var newdwz = element.DWZ;
         var newelo = element.ELO;
         var newclub = element.Club;
+        var newyob = element.YOB;
+        var newtitle = typeof element.Title !== "undefined" ? element.Title : "";
         var name = element.Lastname+","+element.Firstname;
 
         newstatus = element.status;
@@ -179,9 +181,11 @@ router.post('/refreshplayerlist', function(req, res, next) {
           newdwz = dewis.rows[j].doc.DWZ;
           newelo = dewis.rows[j].doc.ELO;
           newclub = dewis.rows[j].doc.Club;
+          newyob = dewis.rows[j].doc.YOB;
+          newtitle = dewis.rows[j].doc.Titel;
         }
 
-        var player = {_id: element._id, _rev:element._rev, Firstname: element.Firstname, Lastname: element.Lastname, DWZ: newdwz, ELO: newelo, Group: element.Group, Sex: element.Sex, Club: newclub, email: element.email, dewis: element.dewis, status: newstatus, datetime: element.datetime };
+        var player = {_id: element._id, _rev:element._rev, Title: newtitle, Firstname: element.Firstname, Lastname: element.Lastname, DWZ: newdwz, ELO: newelo, YOB: newyob, Country: element.Country, paymentstatus: element.paymentstatus, Group: element.Group, Sex: element.Sex, Club: newclub, email: element.email, dewis: element.dewis, status: newstatus, datetime: element.datetime };
         docs.push(player);
       });
       
@@ -517,32 +521,65 @@ router.post('/webmaster', requireLogin, function(req, res, next) {
   } else console.log("Berechtigungsfehler!");
 });
 
-router.get('/download', requireLogin, function(req, res, next) {
+router.get('/download/group/:name', requireLogin, function(req, res, next) {
 
   var db = req.db;
+  var groupName = req.params.name;
+
   var query = {
     "selector": {
       "Lastname": {"$gt": ""},
-      "status": "confirmed"
+      "status": "confirmed",
+      "Group": groupName
     },
-   "fields": ["Group","Title","Firstname", "Lastname","Club","ELO","DWZ"]
+   "fields": ["Title","Firstname", "Lastname","Club","ELO","DWZ", "YOB", "Sex"]
   };  
    
   db.find(query, function (err, players) {
     if (err) console.log(err);
-      
-    const stringify = require('csv-stringify');
+ 
+    players.docs.sort(function(a, b) { 
+      var twz_a = 0, twz_b = 0; 
+      if (a.hasOwnProperty("DWZ")) twz_a = a.DWZ; 
+      if (b.hasOwnProperty("DWZ")) twz_b = b.DWZ; 
+      if (a.hasOwnProperty("ELO") && a.ELO>twz_a) twz_a = a.ELO; 
+      if (b.hasOwnProperty("ELO") && b.ELO>twz_b) twz_b = b.ELO; 
+      return twz_b - twz_a; 
+    });
 
     var tm = new Date();
     var ts = tm.toString().slice(4,15).replace(/\s+/g, '');
-  
-    
-    stringify(players.docs, { header: true }, function (err, data) {
 
-      res.writeHead(200, {"Content-Type": "text/csv", 'Content-Disposition': 'attachment; filename=\"' + 'Spieler-' + ts + '.csv\"'});
-      res.end(data);
-    }); 
+    var swiss = [];
+    for (i=0; i< players.docs.length; i++) {
+      p = players.docs[i];
+      var cntry = typeof p.Country == "undefined" ? "GER" : p.Country;
+      var attr = p.Sex == "female" ? "w" : "";
 
+      if (typeof p.Country == "undefined")
+      var swiss_player = {  "Name": p.Lastname + ', ' + p.Firstname,
+                            "Verein": p.Club,
+                            "Land": cntry,
+                            "ELO": p.ELO,
+                            "DWZ" : p.DWZ,
+                            "Title": p.Title,
+                            "YOB": p.YOB,
+                            "PKZ" : "",
+                            "FIDE-ID" : "",
+                            "TNr-ID" : "",
+                            "Attr" : attr,
+                            "Sel" : "" 
+                          }
+      swiss.push(swiss_player);                    
+    }
+
+    const { Parser } = require('json2csv');
+    const fields = ['Name', 'Verein', 'Land', 'ELO', 'DWZ', 'Title', 'YOB', 'PKZ', 'FIDE-ID', 'TNr-ID', 'Attr', 'Sel'];
+    const json2csvParser = new Parser({ fields, delimiter: ';', header: false, withBOM: true });
+    const csv = json2csvParser.parse(swiss);
+ 
+    res.writeHead(200, {"Content-Type": "text/csv", 'Content-Disposition': 'attachment; filename=\"' + 'Spieler-' + groupName + '-'+ ts + '.LST\"'});
+    res.end(csv);
   });
 });
 
