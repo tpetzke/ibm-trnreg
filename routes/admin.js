@@ -111,6 +111,26 @@ router.post('/setup', function (req, res) {
 
       var docs = [];
       for (i=0; i<users.docs.length; i++) docs.push({userid:users.docs[i].userid, password:users.docs[i].password,level:users.docs[i].level});
+      
+      tournament_doc = {
+        tournament: {
+        name: name,
+        shortname: shortname,
+        email: email,
+        sentmails: sentmails,
+        location: location,
+        date: date,
+        url: announcement,
+        description : description,
+        capacity : capacity,
+        groups: groups,
+        entryfee: entryfee,
+        paymentdeadline: paymentdeadline,
+        recipient: recipient,
+        IBAN: IBAN,
+        imprint : imprint
+      }} 
+
       docs.push(tournament_doc);
 
       cloudant.db.destroy(dbname, function (err, data) {

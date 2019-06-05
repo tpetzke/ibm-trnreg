@@ -106,7 +106,7 @@ exports.dbInit = function(db, default_docs, callback) {
         docs.push(tournament_doc);
         docs.push(root_doc);
     } else {
-        for (i=0; i<default_docs.length; i++) docs.push(default_docs[i]);
+        // for (i=0; i<default_docs.length; i++) docs.push(default_docs[i]);
     }
 
     db.bulk({ docs:docs }, function(err) {
